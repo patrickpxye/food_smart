@@ -7,6 +7,7 @@
 - [ ] LSTM
 - [ ] Join-embedding
 - [ ] Attention/Inception
+- [ ] Recipe/Cooking Instructions
 - [ ] Nutrition
 - [ ] Ranking
 
