@@ -1,0 +1,17 @@
+- [ ] Ultimate Goals
+- [ ] Dataset (Recipe 1M+)
+- [ ] Data Augmentation 
+- [ ] Baseline: Basic CNN for multi labeling foods
+- [ ] —------------------- ( done by 10/27)
+- [ ] Residual
+- [ ] LSTM
+- [ ] Join-embedding
+- [ ] Attention/Inception
+- [ ] Nutrition
+- [ ] Ranking
+
+To do by Wednesday: 
+- [ ] Set up coding environment
+- [ ] Import training data from Recipe1M+ 
+- [ ] Run Recipe1M+ pretrained NN running as an ultimate goal
+- [ ] Figure out architecture for CNN
