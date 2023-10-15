@@ -1,0 +1,17 @@
+
+
+Meeting 10/14 2:00 PM
+
+Progress
+    1. Decided the baseline model architecture and implementation details
+    2. Setup development environment
+    3. Read through some relevant research work on food image detection
+
+TODO:
+    1. Validate the dataset source (Jordan)
+    2. develop script to download dataset to local dev server (shoupei/Jordan)
+    3. Setup training environment using pytorch
+    4. Develop simple CNN using   (Patrick/Jordan/shoupei)
+        4a) ResNet
+        4b) pytorch library
+    5. Evaluate pre-trained model (optional)
