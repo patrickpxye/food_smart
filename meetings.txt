@@ -1,4 +1,10 @@
 
+Meeting 10/17 9:00 PM
+
+   1. build baseline model using SAM and linear classifier
+   2. paper: https://arxiv.org/pdf/1707.08816.pdf
+   3. paper: https://arxiv.org/pdf/2210.14147.pdf
+   4. github: https://github.com/MarcBS/food_ingredients_recognition/tree/master
 
 Meeting 10/14 2:00 PM
 
