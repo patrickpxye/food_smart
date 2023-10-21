@@ -1,4 +1,13 @@
 
+Meeting 10/21
+
+   1. Additional paper: https://arxiv.org/pdf/2103.03375.pdf
+   2. Jordan implementing SAM
+   3. understood the first articles using ResNet50 and Inceptron V3 using Sigmoid
+   4. Nutrition5K: https://github.com/google-research-datasets/Nutrition5k
+   5. Setup ResNet50 and Inception V3 model config, and train the models
+
+
 Meeting 10/17 9:00 PM
 
    1. build baseline model using SAM and linear classifier
