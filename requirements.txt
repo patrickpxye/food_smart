@@ -8,3 +8,12 @@ scikit-learn
 tqdm
 word2vec
 nltk
+six
+toolz
+tensorflow
+#cloud
+#cpickle
+cython
+keras
+PyYAML
+#allow-unverified keras

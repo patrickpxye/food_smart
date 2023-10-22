@@ -18,3 +18,9 @@ Requires-Dist: scikit-learn
 Requires-Dist: tqdm
 Requires-Dist: word2vec
 Requires-Dist: nltk
+Requires-Dist: six
+Requires-Dist: toolz
+Requires-Dist: tensorflow
+Requires-Dist: cython
+Requires-Dist: keras
+Requires-Dist: PyYAML

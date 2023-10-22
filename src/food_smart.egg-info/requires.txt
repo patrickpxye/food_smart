@@ -8,3 +8,9 @@ scikit-learn
 tqdm
 word2vec
 nltk
+six
+toolz
+tensorflow
+cython
+keras
+PyYAML

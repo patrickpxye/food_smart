@@ -964,8 +964,8 @@ class Model_Wrapper(object):
                         logging.info("DEBUG: Exception occurred.")
                     exc_type, exc_obj, exc_trace = t.exception
                     # deal with the exception
-                    print exc_type, exc_obj
-                    print exc_trace
+                    print("exc_type, exc_obj")
+                    print("exc_trace")
                     raise Exception('Exception occurred in ThreadLoader.')
                 t_queue[state['it']] = None
                 if state['it'] + params['n_parallel_loaders'] < state['n_iterations_per_epoch']:
@@ -1065,8 +1065,8 @@ class Model_Wrapper(object):
                         else:
                             exc_type, exc_obj, exc_trace = t.exception
                             # deal with the exception
-                            print exc_type, exc_obj
-                            print exc_trace
+                            print(exc_type, exc_obj)
+                            print(exc_trace)
                             raise Exception('Exception occurred in ThreadLoader.')
                         t_val_queue[it_val] = None
                         if it_val + params['n_parallel_loaders'] < params['num_iterations_val']:
@@ -1228,8 +1228,8 @@ class Model_Wrapper(object):
             else:
                 exc_type, exc_obj, exc_trace = t.exception
                 # deal with the exception
-                print exc_type, exc_obj
-                print exc_trace
+                print(exc_type, exc_obj)
+                print(exc_trace)
                 raise Exception('Exception occurred in ThreadLoader.')
             t_test_queue[it_test] = None
             if it_test + params['n_parallel_loaders'] < numIterationsTest:
@@ -1630,7 +1630,7 @@ class Model_Wrapper(object):
         """
         DEPRECATED, use predictBeamSearchNet() instead.
         """
-        print "WARNING!: deprecated function, use predictBeamSearchNet() instead"
+        print("WARNING!: deprecated function, use predictBeamSearchNet() instead")
         return self.predictBeamSearchNet(ds, parameters)
 
     def predictBeamSearchNet(self, ds, parameters={}):
@@ -2170,7 +2170,7 @@ class Model_Wrapper(object):
         :return:
         """
 
-        print "WARNING!: deprecated function, use utils.sample() instead"
+        print("WARNING!: deprecated function, use utils.sample() instead")
         return sample(a, temperature=temperature)
 
     def sampling(self, scores, sampling_type='max_likelihood', temperature=1.0):
@@ -2183,7 +2183,7 @@ class Model_Wrapper(object):
         :param temperature: Temperature for the predictions. The higher, the flatter probabilities. Hence more random outputs.
         :return: set of indices chosen as output, a vector of size #samples
         """
-        print "WARNING!: deprecated function, use utils.sampling() instead"
+        print("WARNING!: deprecated function, use utils.sampling() instead")
         return sampling(scores, sampling_type=sampling_type, temperature=temperature)
 
     def decode_predictions(self, preds, temperature, index2word, sampling_type, verbose=0):
@@ -2196,7 +2196,7 @@ class Model_Wrapper(object):
         :param verbose: Verbosity level, by default 0.
         :return: List of decoded predictions.
         """
-        print "WARNING!: deprecated function, use utils.decode_predictions() instead"
+        print("WARNING!: deprecated function, use utils.decode_predictions() instead")
         return decode_predictions(preds, temperature, index2word, sampling_type, verbose=verbose)
 
 
@@ -2214,7 +2214,7 @@ class Model_Wrapper(object):
         :param verbose: Verbosity level
         :return: trg_word_seq with replaced unknown words
         """
-        print "WARNING!: deprecated function, use utils.replace_unknown_words() instead"
+        print("WARNING!: deprecated function, use utils.replace_unknown_words() instead")
         return replace_unknown_words(src_word_seq, trg_word_seq, hard_alignment, unk_symbol,
                                      heuristic=heuristic, mapping=mapping, verbose=verbose)
 
@@ -2229,7 +2229,7 @@ class Model_Wrapper(object):
         :param verbose: Verbosity level, by default 0.
         :return: List of decoded predictions
         """
-        print "WARNING!: deprecated function, use utils.decode_predictions_beam_search() instead"
+        print("WARNING!: deprecated function, use utils.decode_predictions_beam_search() instead")
         return decode_predictions_beam_search(preds, index2word, alphas=alphas, heuristic=heuristic,
                                           x_text=x_text, unk_symbol=unk_symbol, pad_sequences=pad_sequences,
                                           mapping=mapping, verbose=0)
@@ -2242,7 +2242,7 @@ class Model_Wrapper(object):
         :param verbose: Verbosity level, by default 0.
         :return: List of convertedpredictions
         """
-        print "WARNING!: deprecated function, use utils.one_hot_2_indices() instead"
+        print("WARNING!: deprecated function, use utils.one_hot_2_indices() instead")
         return one_hot_2_indices(preds, pad_sequences=pad_sequences, verbose=verbose)
 
 
@@ -2254,7 +2254,7 @@ class Model_Wrapper(object):
         :param verbose: Verbosity level, by default 0.
         :return: List of decoded predictions
         """
-        print "WARNING!: deprecated function, use utils.decode_predictions_one_hot() instead"
+        print("WARNING!: deprecated function, use utils.decode_predictions_one_hot() instead")
         return decode_predictions_one_hot(preds, index2word, verbose=verbose)
 
     def prepareData(self, X_batch, Y_batch=None):

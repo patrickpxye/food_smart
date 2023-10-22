@@ -16,7 +16,7 @@ from keras.applications.inception_v3 import InceptionV3
 from keras_wrapper.cnn_model import Model_Wrapper
 
 import numpy as np
-import cPickle as pk
+#import cPickle as pk
 import os
 import logging
 import shutil

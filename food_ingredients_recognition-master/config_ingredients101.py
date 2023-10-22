@@ -5,7 +5,7 @@ def load_parameters():
 
     # Input data params
     #DATA_ROOT_PATH = '/media/HDD_2TB/marc/multimodal_keras_wrapper/data/sample_data/' # Root path to the data
-    DATA_ROOT_PATH = '/media/HDD_3TB/DATASETS/Ingredients101/'
+    DATA_ROOT_PATH = '~/PycharmProjects/food_smart/data/Ingredients101/'
     #DATA_ROOT_PATH = '/media/HDD_3TB/DATASETS/Recipes5k/'
     CLASSIFICATION_TYPE = 'multi-label' # 'single-label' or 'multi-label'
     INGREDIENTS_TYPE = 'simplified'  # 'simplified' or 'complete'
