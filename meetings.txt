@@ -1,3 +1,11 @@
+Meeting 10/24
+    1. use movie example to setup model (https://debuggercafe.com/multi-label-image-classification-with-pytorch-and-deep-learning/)
+    2. Milestone writeup
+        2a. multi-lable logistic regression math in paper
+        2b. Pictures from running from somewhere
+        3b. references all papers
+    3. Research on more classifications
+    4. Set up 15 mins Zoom meetings (sent)
 
 Meeting 10/21
 
