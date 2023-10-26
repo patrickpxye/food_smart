@@ -10,10 +10,7 @@ word2vec
 nltk
 six
 toolz
-tensorflow
-#cloud
-#cpickle
-cython
-keras
-PyYAML
-#allow-unverified keras
+torch
+opencv-python
+torchvision
+pandas
