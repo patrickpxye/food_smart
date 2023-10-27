@@ -25,7 +25,7 @@ class ImageDataset(Dataset):
         return len(self.image_index_to_name)
 
     def __getitem__(self, index):
-        image = cv2.imread(f"../input/ingredients_classifier/images/{self.image_index_to_name[index]}")
+        image = cv2.imread(self.base_dir + self.image_index_to_name[index])
         # convert the image from BGR to RGB color format
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         # apply image transforms
