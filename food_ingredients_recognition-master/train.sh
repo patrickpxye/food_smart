@@ -1,1 +1,0 @@
-PYTHONPATH=$PYTHONPATH:~/PycharmProjects/food_smart/food_ingredients_recognition-master/multimodal_keras_wrapper:~/PycharmProjects/food_smart/food_ingredients_recognition-master/keras CUDA_VISIBLE_DEVICES=0 THEANO_FLAGS='device=cuda,optimizer=fast_compile,optimizer_including=fusion,lib.cnmem=0.3' python -u ~/PycharmProjects/food_smart/food_ingredients_recognition-master/main.py
