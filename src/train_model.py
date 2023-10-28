@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 
 from engine import train, validate
-from dataset import ImageDataset
+from dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
 
 matplotlib.style.use('ggplot')
@@ -16,7 +16,7 @@ matplotlib.style.use('ggplot')
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 #intialize the model
-model = models.model(pretrained=True, requires_grad=False, out_features=25).to(device)
+model = models.model(pretrained=True, requires_grad=False, out_features=1095).to(device)
 # learning parameters
 lr = 0.0001
 epochs = 20
@@ -27,13 +27,19 @@ criterion = nn.BCELoss()
 # read the training csv file
 train_csv = pd.read_csv('../input/movie-classifier/Multi_Label_dataset/train.csv')
 # train dataset
-train_data = ImageDataset(
-    train_csv, train=True, test=False
-)
+train_data = ImageDataset("../input/ingredients_classifier/train_images.txt",
+                       "../input/ingredients_classifier/train_labels.txt",
+                       "../input/ingredients_classifier/recipes.txt",
+                       "../input/ingredients_classifier/ingredients.txt",
+                       True,
+                       False)
 # validation dataset
-valid_data = ImageDataset(
-    train_csv, train=False, test=False
-)
+valid_data = ImageDataset("../input/ingredients_classifier/val_images.txt",
+                       "../input/ingredients_classifier/val_labels.txt",
+                       "../input/ingredients_classifier/recipes.txt",
+                       "../input/ingredients_classifier/ingredients.txt",
+                       False,
+                       False)
 # train data loader
 train_loader = DataLoader(
     train_data,
