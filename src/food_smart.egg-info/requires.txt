@@ -1,0 +1,16 @@
+numpy
+scipy
+pillow
+matplotlib
+h5py
+torchfile
+scikit-learn
+tqdm
+word2vec
+nltk
+six
+toolz
+torch
+opencv-python
+torchvision
+pandas
