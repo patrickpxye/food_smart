@@ -24,8 +24,6 @@ batch_size = 32
 optimizer = optim.Adam(model.parameters(), lr=lr)
 criterion = nn.BCELoss()
 
-# read the training csv file
-train_csv = pd.read_csv('../input/movie-classifier/Multi_Label_dataset/train.csv')
 # train dataset
 train_data = ImageDataset("../input/ingredients_classifier/train_images.txt",
                        "../input/ingredients_classifier/train_labels.txt",
