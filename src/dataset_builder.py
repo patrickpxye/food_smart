@@ -16,7 +16,7 @@ class ImageDataset(Dataset):
         self.for_test = for_test
         self.image_transform = None
 
-        self.ingredient_index, _ = self.build_ingredient_indices()
+        self.ingredient_index, self.index_to_ingredient = self.build_ingredient_indices()
         self.label_matrix = self.build_label_matrix(self.ingredient_index)
         self.image_index_to_recipe_index, self.image_index_to_name = self.build_image_recipe_map()
         self.build_image_transformer()
