@@ -43,7 +43,7 @@ for counter, data in enumerate(test_loader):
     string_predicted = ''
     string_actual = ''
     for i in range(len(best)):
-        string_predicted += f"{test_data.index_to_ingredient[best[i]]}    "
+        string_predicted += f"{test_data.index_to_ingredient[best[i].item()]}    "
     for i in range(len(target_indices)):
         string_actual += f"{test_data.index_to_ingredient[target_indices[i]]}    "
     image = image.squeeze(0)
@@ -53,4 +53,4 @@ for counter, data in enumerate(test_loader):
     plt.axis('off')
     plt.title(f"PREDICTED: {string_predicted}\nACTUAL: {string_actual}")
     plt.savefig(f"../outputs/inference_{counter}.jpg")
-    plt.show()
+    #plt.show()
