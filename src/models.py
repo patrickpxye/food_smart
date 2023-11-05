@@ -11,6 +11,8 @@ def model(pretrained, requires_grad, out_features):
         for param in model.parameters():
             param.requires_grad = True
     # make the classification layer learnable
-    # we have 25 classes in total
     model.fc = nn.Linear(2048, out_features)
+    # softmax
+    # Decision tree boosting Ada, XGBoost
+    # GDA
     return model
