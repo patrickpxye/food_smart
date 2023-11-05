@@ -14,3 +14,5 @@ torch
 opencv-python
 torchvision
 pandas
+xgboost
+scikit-learn
