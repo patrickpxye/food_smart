@@ -11,7 +11,7 @@ from dataset_builder import ImageDataset
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the ResNet50 model
-model = models.model(pretrained=True, requires_grad=False, out_features=255).to(device)
+model = models.model(requires_grad=False, out_features=255).to(device)
 model.eval()
 
 # train dataset

@@ -15,8 +15,8 @@ matplotlib.style.use('ggplot')
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# intialize the model
-model = models.model(pretrained=True, requires_grad=False, out_features=1095).to(device)
+# initialize the model
+model = models.model(requires_grad=False, out_features=1095).to(device)
 # learning parameters
 lr = 0.0001
 epochs = 20
