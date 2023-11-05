@@ -1,28 +1,29 @@
 import models
 import torch
+import joblib
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
-from dataset_builder import ImageDataset
+from sklearn import svm
 from torch.utils.data import DataLoader
+from sklearn.multiclass import OneVsRestClassifier
+from dataset_builder import ImageDataset
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the model
-model = models.model(pretrained=False, requires_grad=False, out_features=1095).to(device)
-# load the model checkpoint
-checkpoint = torch.load('../outputs/model.pth')
-# load model weights state_dict
-model.load_state_dict(checkpoint['model_state_dict'])
+model = models.model(pretrained=False, requires_grad=False, out_features=255).to(device)
 model.eval()
 
+# load SVM model
+clf = joblib.load('../../outputs/svm_model.pkl')
+
 # prepare the test dataset and dataloader
-test_data = ImageDataset("../input/ingredients_classifier/images/",
-                         "../input/ingredients_classifier/test_images.txt",
-                         "../input/ingredients_classifier/test_labels.txt",
-                         "../input/ingredients_classifier/recipes.txt",
-                         "../input/ingredients_classifier/ingredients.txt",
+test_data = ImageDataset("../../input/ingredients_classifier/images/",
+                         "../../input/ingredients_classifier/test_images.txt",
+                         "../../input/ingredients_classifier/test_labels.txt",
+                         "../../input/ingredients_classifier/recipes.txt",
+                         "../../input/ingredients_classifier/filtered_ingredients.txt",
                          False,
                          True)
 test_loader = DataLoader(
@@ -37,9 +38,11 @@ for counter, data in enumerate(test_loader):
     target_indices = [i for i in range(len(target[0])) if target[0][i] == 1]
     # get the predictions by passing the image through the model
     outputs = model(image)
-    outputs = torch.sigmoid(outputs)
+    # outputs = torch.sigmoid(outputs)
     outputs = outputs.detach().cpu()
-    sorted_indices = np.argsort(outputs[0])
+    predictions = clf.predict(outputs)
+    print(f'prediction probability {predictions}')
+    sorted_indices = np.argsort(predictions[0])
     best = sorted_indices[-5:]
     string_predicted = ''
     string_actual = ''
@@ -53,5 +56,5 @@ for counter, data in enumerate(test_loader):
     plt.imshow(image)
     plt.axis('off')
     plt.title(f"PREDICTED: {string_predicted}\nACTUAL: {string_actual}")
-    plt.savefig(f"../outputs/inference_{counter}.jpg")
+    plt.savefig(f"../../outputs/inference_{counter}.jpg")
     # plt.show()
