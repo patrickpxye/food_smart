@@ -32,8 +32,8 @@ class ImageDataset(Dataset):
         targets = self.label_matrix[self.image_index_to_recipe_index[index]]
 
         return {
-            'image': torch.tensor(image, dtype=torch.float32),
-            'label': torch.tensor(targets, dtype=torch.float32)
+            'image': image.clone().detach(),
+            'label': targets.clone().detach()
         }
 
     def build_ingredient_indices(self):

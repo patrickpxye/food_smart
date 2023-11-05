@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the model
-model = models.model(pretrained=False, requires_grad=False, out_features=1095).to(device)
+model = models.model(requires_grad=False, out_features=1095).to(device)
 # load the model checkpoint
 checkpoint = torch.load('../outputs/model.pth')
 # load model weights state_dict

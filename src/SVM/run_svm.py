@@ -12,7 +12,7 @@ from dataset_builder import ImageDataset
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the model
-model = models.model(pretrained=False, requires_grad=False, out_features=255).to(device)
+model = models.model(requires_grad=False, out_features=255).to(device)
 model.eval()
 
 # load SVM model
