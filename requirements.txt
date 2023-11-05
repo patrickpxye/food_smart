@@ -14,5 +14,9 @@ torch
 opencv-python
 torchvision
 pandas
+<<<<<<< HEAD
 xgboost
 scikit-learn
+=======
+sklearn
+>>>>>>> feaccd34829a7f5e15108bb19a3961a25dedf3ea

@@ -15,8 +15,8 @@ matplotlib.style.use('ggplot')
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-#intialize the model
-model = models.model(pretrained=True, requires_grad=False, out_features=1095).to(device)
+# initialize the model
+model = models.model(requires_grad=False, out_features=1095).to(device)
 # learning parameters
 lr = 0.0001
 epochs = 20
@@ -25,19 +25,21 @@ optimizer = optim.Adam(model.parameters(), lr=lr)
 criterion = nn.BCELoss()
 
 # train dataset
-train_data = ImageDataset("../input/ingredients_classifier/train_images.txt",
-                       "../input/ingredients_classifier/train_labels.txt",
-                       "../input/ingredients_classifier/recipes.txt",
-                       "../input/ingredients_classifier/ingredients.txt",
-                       True,
-                       False)
+train_data = ImageDataset("../input/ingredients_classifier/images/",
+                          "../input/ingredients_classifier/train_images.txt",
+                          "../input/ingredients_classifier/train_labels.txt",
+                          "../input/ingredients_classifier/recipes.txt",
+                          "../input/ingredients_classifier/ingredients.txt",
+                          True,
+                          False)
 # validation dataset
-valid_data = ImageDataset("../input/ingredients_classifier/val_images.txt",
-                       "../input/ingredients_classifier/val_labels.txt",
-                       "../input/ingredients_classifier/recipes.txt",
-                       "../input/ingredients_classifier/ingredients.txt",
-                       False,
-                       False)
+valid_data = ImageDataset("../input/ingredients_classifier/images/",
+                          "../input/ingredients_classifier/val_images.txt",
+                          "../input/ingredients_classifier/val_labels.txt",
+                          "../input/ingredients_classifier/recipes.txt",
+                          "../input/ingredients_classifier/ingredients.txt",
+                          False,
+                          False)
 # train data loader
 train_loader = DataLoader(
     train_data,
@@ -55,7 +57,7 @@ valid_loader = DataLoader(
 train_loss = []
 valid_loss = []
 for epoch in range(epochs):
-    print(f"Epoch {epoch+1} of {epochs}")
+    print(f"Epoch {epoch + 1} of {epochs}")
     train_epoch_loss = train(
         model, train_loader, optimizer, criterion, train_data, device
     )
@@ -69,11 +71,11 @@ for epoch in range(epochs):
 
 # save the trained model to disk
 torch.save({
-            'epoch': epochs,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': criterion,
-            }, '../outputs/model.pth')
+    'epoch': epochs,
+    'model_state_dict': model.state_dict(),
+    'optimizer_state_dict': optimizer.state_dict(),
+    'loss': criterion,
+}, '../outputs/model.pth')
 # plot and save the train and validation line graphs
 plt.figure(figsize=(10, 7))
 plt.plot(train_loss, color='orange', label='train loss')

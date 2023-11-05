@@ -5,9 +5,8 @@ import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
 class ImageDataset(Dataset):
-
-    base_dir = "../input/ingredients_classifier/images/"
-    def __init__(self, image_file, label_file, recipe_file, ingredient_file, for_training, for_test):
+    def __init__(self, image_base_dir, image_file, label_file, recipe_file, ingredient_file, for_training, for_test):
+        self.image_base_dir = image_base_dir
         self.image_file = image_file
         self.label_file = label_file
         self.recipe_file = recipe_file
@@ -25,7 +24,7 @@ class ImageDataset(Dataset):
         return len(self.image_index_to_name)
 
     def __getitem__(self, index):
-        image = cv2.imread(self.base_dir + self.image_index_to_name[index])
+        image = cv2.imread(self.image_base_dir + self.image_index_to_name[index])
         # convert the image from BGR to RGB color format
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         # apply image transforms
@@ -33,8 +32,8 @@ class ImageDataset(Dataset):
         targets = self.label_matrix[self.image_index_to_recipe_index[index]]
 
         return {
-            'image': torch.tensor(image, dtype=torch.float32),
-            'label': torch.tensor(targets, dtype=torch.float32)
+            'image': image.clone().detach(),
+            'label': targets.clone().detach()
         }
 
     def build_ingredient_indices(self):
