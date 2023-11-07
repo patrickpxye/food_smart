@@ -1,0 +1,8 @@
+README.md
+pyproject.toml
+setup.py
+src/food_smart.egg-info/PKG-INFO
+src/food_smart.egg-info/SOURCES.txt
+src/food_smart.egg-info/dependency_links.txt
+src/food_smart.egg-info/requires.txt
+src/food_smart.egg-info/top_level.txt
