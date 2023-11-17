@@ -7,7 +7,8 @@ from torch.utils.data import Dataset
 class ImageDataset(Dataset):
 
     base_dir = "../input/ingredients_classifier/images/"
-    def __init__(self, image_file, label_file, recipe_file, ingredient_file, for_training, for_test, num_samples=None):
+    def __init__(self, image_base_dir, image_file, label_file, recipe_file, ingredient_file, for_training, for_test, num_samples=None):
+        self.image_base_dir = image_base_dir
         self.image_file = image_file
         self.label_file = label_file
         self.recipe_file = recipe_file
@@ -37,7 +38,7 @@ class ImageDataset(Dataset):
         return label
     
     def __getitem__(self, index):
-        image = cv2.imread(self.base_dir + self.image_index_to_name[index])
+        image = cv2.imread(self.image_base_dir + self.image_index_to_name[index])
         # convert the image from BGR to RGB color format
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         # apply image transforms

@@ -1,16 +1,17 @@
 from torchvision import models as models
 import torch.nn as nn
-def model(pretrained, requires_grad, out_features):
-    model = models.resnet50(progress=True, pretrained=pretrained)
+
+
+def model(requires_grad, out_features):
+    resnet50_model = models.resnet50(progress=True, weights='imagenet')
     # to freeze the hidden layers
-    if requires_grad == False:
-        for param in model.parameters():
+    if not requires_grad:
+        for param in resnet50_model.parameters():
             param.requires_grad = False
     # to train the hidden layers
-    elif requires_grad == True:
-        for param in model.parameters():
+    elif requires_grad:
+        for param in resnet50_model.parameters():
             param.requires_grad = True
     # make the classification layer learnable
-    # we have 25 classes in total
-    model.fc = nn.Linear(2048, out_features)
-    return model
+    resnet50_model.fc = nn.Linear(2048, out_features)
+    return resnet50_model
