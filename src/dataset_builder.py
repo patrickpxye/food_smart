@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 class ImageDataset(Dataset):
 
     base_dir = "../input/ingredients_classifier/images/"
-    def __init__(self, image_file, label_file, recipe_file, ingredient_file, for_training, for_test):
+    def __init__(self, image_file, label_file, recipe_file, ingredient_file, for_training, for_test, num_samples=None):
         self.image_file = image_file
         self.label_file = label_file
         self.recipe_file = recipe_file
@@ -15,15 +15,27 @@ class ImageDataset(Dataset):
         self.for_training = for_training
         self.for_test = for_test
         self.image_transform = None
+        self.num_samples = num_samples
 
         self.ingredient_index, self.index_to_ingredient = self.build_ingredient_indices()
         self.label_matrix = self.build_label_matrix(self.ingredient_index)
         self.image_index_to_recipe_index, self.image_index_to_name = self.build_image_recipe_map()
         self.build_image_transformer()
 
+    # def __len__(self):
+    #     return len(self.image_index_to_name)
     def __len__(self):
-        return len(self.image_index_to_name)
-
+        if self.num_samples is not None:
+            return min(self.num_samples, len(self.image_index_to_name))
+        else:
+            return len(self.image_index_to_name)   
+        
+    def get_label(self, index):
+        # Extract the label from the image filename
+        image_name = self.image_index_to_name[index]
+        label = image_name.split('/')[0]  # Split by '/' and take the first part
+        return label
+    
     def __getitem__(self, index):
         image = cv2.imread(self.base_dir + self.image_index_to_name[index])
         # convert the image from BGR to RGB color format
@@ -31,10 +43,12 @@ class ImageDataset(Dataset):
         # apply image transforms
         image = self.image_transform(image)
         targets = self.label_matrix[self.image_index_to_recipe_index[index]]
-
+        # get label from the image 
+        label = self.get_label(index) 
         return {
             'image': torch.tensor(image, dtype=torch.float32),
-            'label': torch.tensor(targets, dtype=torch.float32)
+            'label': torch.tensor(targets, dtype=torch.float32), 
+            'label_name': label,
         }
 
     def build_ingredient_indices(self):
