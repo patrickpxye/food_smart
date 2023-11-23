@@ -29,19 +29,19 @@ batch_size = 32
 # criterion = nn.BCELoss()
 
 # train dataset
-train_data = ImageDataset("../input/ingredients_classifier/train_images.txt",
-                       "../input/ingredients_classifier/train_labels.txt",
-                       "../input/ingredients_classifier/recipes.txt",
-                       "../input/ingredients_classifier/ingredients.txt",
+train_data = ImageDataset("../../input/ingredients_classifier/train_images.txt",
+                       "../../input/ingredients_classifier/train_labels.txt",
+                       "../../input/ingredients_classifier/recipes.txt",
+                       "../../input/ingredients_classifier/ingredients.txt",
                        True,
                        False,
                     #    num_samples=100
                        )
 # validation dataset
-valid_data = ImageDataset("../input/ingredients_classifier/val_images.txt",
-                       "../input/ingredients_classifier/val_labels.txt",
-                       "../input/ingredients_classifier/recipes.txt",
-                       "../input/ingredients_classifier/ingredients.txt",
+valid_data = ImageDataset("../../input/ingredients_classifier/val_images.txt",
+                       "../../input/ingredients_classifier/val_labels.txt",
+                       "../../input/ingredients_classifier/recipes.txt",
+                       "../../input/ingredients_classifier/ingredients.txt",
                        False,
                        False)
 print("finished loading data")
@@ -264,5 +264,5 @@ for counter, data in enumerate(valid_loader):
     string_predicted = f"{string_predicted_ingredients} "
     string_actual = '    '.join(actual_label_names)
     plt.title(f"PREDICTED: {string_predicted}\nACTUAL: {string_actual}")
-    plt.savefig(f"../outputs_k_means/inference_{counter}.jpg")
+    plt.savefig(f"../../outputs_k_means/inference_{counter}.jpg")
     plt.close()  # Close the plot to avoid displaying it in the notebook
