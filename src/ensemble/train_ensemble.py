@@ -10,6 +10,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import VotingClassifier
+from sklearn.multioutput import ClassifierChain
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -64,9 +65,9 @@ labels = np.array(labels)
 clf1 = OneVsRestClassifier(svm.SVC())
 clf2 = OneVsRestClassifier(LogisticRegression())
 clf3 = OneVsRestClassifier(DecisionTreeClassifier())
-eclf = VotingClassifier(estimators=[('svc', clf1), ('lr', clf2), ('dt', clf3)], voting='hard')
-
-eclf.fit(features, labels)
+ecf = VotingClassifier(estimators=[('svc', clf1), ('lr', clf2), ('dt', clf3)], voting='hard')
+chain = ClassifierChain(ecf)
+chain.fit(features, labels)
 
 # Save the model
-joblib.dump(clf, '../../outputs/ensemble_model.pkl')
+joblib.dump(chain, '../../outputs/ensemble_model.pkl')
