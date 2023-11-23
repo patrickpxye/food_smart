@@ -1,12 +1,13 @@
 import models
 import torch
 import numpy as np
+import xgboost as xgb
 
 from dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score, hamming_loss
 
-def train_xgb(feature_extractor, train_loader, xgb_model, device, val_loader, num_batches=10):
+def train_xgb(feature_extractor, train_loader, device, val_loader, num_batches=10):
     train_features = []
     train_labels = []
     batch_count = 0
@@ -31,18 +32,27 @@ def train_xgb(feature_extractor, train_loader, xgb_model, device, val_loader, nu
     if train_labels.ndim == 1 or train_labels.shape[1] != 1095:
         raise ValueError("Dimension of train_labels is not correct. Expected 1095 labels per datapoint.")
 
-    # Train XGBoost
+    # Train XGBoost for each label
+    xgb_models = []  # List to store models
     for i in range(train_labels.shape[1]):  # Iterate over each class/label
         print(f"Training classifier for label {i+1}/{train_labels.shape[1]}")
+        xgb_model = xgb.XGBClassifier(
+            objective='binary:logistic',
+            n_estimators=100,
+            max_depth=100,
+            learning_rate=0.1,
+            use_label_encoder=False  # to avoid a warning since XGBoost 1.3.0 release
+        )  # Create a new instance for each label
         xgb_model.fit(train_features, train_labels[:, i])
+        xgb_models.append(xgb_model)  # Store the trained model
     
     # Evaluation should be called after the training loop
-    evaluate_xgb(feature_extractor, val_loader, xgb_model, device)
+    evaluate_xgb(feature_extractor, val_loader, xgb_models, device)
 
-    return xgb_model
+    return xgb_models
 
 
-def evaluate_xgb(feature_extractor, val_loader, xgb_model, device, num_batches=1):
+def evaluate_xgb(feature_extractor, val_loader, xgb_models, device, num_batches=1):
     val_features = []
     val_labels = []
     predictions = []
@@ -65,8 +75,9 @@ def evaluate_xgb(feature_extractor, val_loader, xgb_model, device, num_batches=1
     val_labels = np.concatenate(val_labels, axis=0)
 
     # Predictions for each class
-    for i in range(val_labels.shape[1]):
-        class_predictions = xgb_model.predict(val_features)
+    predictions = []
+    for model in xgb_models:  # Use each model for prediction
+        class_predictions = model.predict(val_features)
         predictions.append(class_predictions)
         
     # Convert predictions list to a NumPy array
@@ -122,7 +133,7 @@ val_loader = DataLoader(
 # initialize the model
 feature_model = models.feature_model(requires_grad=False).to(device)
 # load the model checkpoint
-checkpoint = torch.load('outputs/feature_model.pth')
+checkpoint = torch.load('trained_models/feature_model.pth')
 # Remove fully connected layer weights
 checkpoint['model_state_dict'].pop('fc.weight', None)
 checkpoint['model_state_dict'].pop('fc.bias', None)
@@ -132,7 +143,8 @@ feature_model.eval()
 
 
 # Integrate the XGBoost training into the training process
-xgb_model = models.xgb_classifier()
-xgb_model = train_xgb(feature_model, train_loader, xgb_model, device, val_loader)
+xgb_models = train_xgb(feature_model, train_loader, device, val_loader)
 
-xgb_model.save_model('outputs/xgb_model.json')  # Save the trained XGBoost model
+# Save each trained XGBoost model
+for i, model in enumerate(xgb_models):
+    model.save_model(f'trained_models/xgb_model_{i}.json')

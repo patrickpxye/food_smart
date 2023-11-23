@@ -27,3 +27,4 @@ def xgb_classifier(n_estimators=100, max_depth=100, learning_rate=0.1):
     )
     # Placeholder for fitting the classifier; to be used during the training loop
     return xgb_classifier
+
