@@ -2,8 +2,8 @@ from torchvision import models as models
 import torch.nn as nn
 import xgboost as xgb
 
-def feature_model(pretrained, requires_grad):
-    model = models.resnet50(progress=True, pretrained=pretrained)
+def feature_model(requires_grad):
+    model = models.resnet50(progress=True, pretrained=True)
     # to freeze the hidden layers
     if requires_grad == False:
         for param in model.parameters():
@@ -16,7 +16,7 @@ def feature_model(pretrained, requires_grad):
     model.fc = nn.Identity()
     return model
 
-def xgb_classifier(n_estimators=100, max_depth=6, learning_rate=0.1):
+def xgb_classifier(n_estimators=100, max_depth=100, learning_rate=0.1):
     # Each label is treated as a separate binary classification problem.
     xgb_classifier = xgb.XGBClassifier(
         objective='binary:logistic',
