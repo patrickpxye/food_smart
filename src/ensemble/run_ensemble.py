@@ -16,7 +16,7 @@ model = models.model(requires_grad=False, out_features=1095).to(device)
 model.eval()
 
 # load SVM model
-clf = joblib.load('../../outputs/svm_model.pkl')
+clf = joblib.load('../../outputs/ensemble_model.pkl')
 
 # prepare the test dataset and dataloader
 test_data = ImageDataset("../../input/ingredients_classifier/images/",

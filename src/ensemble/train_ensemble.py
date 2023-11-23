@@ -7,6 +7,9 @@ from torch.utils.data import DataLoader
 from sklearn.multiclass import OneVsRestClassifier
 from dataset_builder import ImageDataset
 import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import VotingClassifier
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -55,11 +58,15 @@ for i, data in tqdm(enumerate(train_loader), total=int(len(train_dataset) / trai
     features.extend(outputs.detach().cpu().numpy())
     labels.extend(target.detach().cpu().numpy())
 
-# Train SVM model
+# Train ensemble model
 features = np.array(features)
 labels = np.array(labels)
-clf = OneVsRestClassifier(svm.SVC())
-clf.fit(features, labels)
+clf1 = OneVsRestClassifier(svm.SVC())
+clf2 = OneVsRestClassifier(LogisticRegression())
+clf3 = OneVsRestClassifier(DecisionTreeClassifier())
+eclf = VotingClassifier(estimators=[('svc', clf1), ('lr', clf2), ('dt', clf3)], voting='hard')
+
+eclf.fit(features, labels)
 
 # Save the model
-joblib.dump(clf, '../../outputs/svm_model.pkl')
+joblib.dump(clf, '../../outputs/ensemble_model.pkl')
