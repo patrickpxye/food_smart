@@ -5,7 +5,7 @@ from tqdm import tqdm
 from sklearn import svm
 from torch.utils.data import DataLoader
 from sklearn.multiclass import OneVsRestClassifier
-from dataset_builder import ImageDataset
+from dataset.dataset_builder import ImageDataset
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier

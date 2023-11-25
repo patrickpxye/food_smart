@@ -1,5 +1,5 @@
-from dataset_builder import ImageDataset
-import filter_ingredients
+from dataset.dataset_builder import ImageDataset
+import dataset.filter_ingredients
 from feature_extractor.feature_extractor import FeatureExtractor
 
 def main():

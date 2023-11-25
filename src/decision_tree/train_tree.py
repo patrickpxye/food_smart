@@ -3,7 +3,7 @@ import torch
 import numpy as np
 import xgboost as xgb
 
-from dataset_builder import ImageDataset
+from dataset.dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score, hamming_loss
 

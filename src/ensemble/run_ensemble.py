@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn import svm
 from torch.utils.data import DataLoader
 from sklearn.multiclass import OneVsRestClassifier
-from dataset_builder import ImageDataset
+from dataset.dataset_builder import ImageDataset
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
