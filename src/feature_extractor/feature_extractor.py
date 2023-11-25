@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from engine import train, validate
+from deep_learning.engine import train, validate
 from torch.utils.data import DataLoader
 
 

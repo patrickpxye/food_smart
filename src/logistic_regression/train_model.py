@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 
-from engine import train, validate
+from deep_learning.engine import train, validate
 from dataset.dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
 
