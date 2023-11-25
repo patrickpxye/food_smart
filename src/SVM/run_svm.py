@@ -1,11 +1,8 @@
-import feature_extractor
 import torch
 import joblib
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import svm
 from torch.utils.data import DataLoader
-from sklearn.multiclass import OneVsRestClassifier
 from dataset.dataset_builder import ImageDataset
 from feature_extractor.feature_extractor import FeatureExtractor
 
