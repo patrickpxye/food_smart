@@ -5,8 +5,6 @@ import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 
 class ImageDataset(Dataset):
-
-    base_dir = "../input/ingredients_classifier/images/"
     def __init__(self, image_base_dir, image_file, label_file, recipe_file, ingredient_file, for_training, for_test, num_samples=None):
         self.image_base_dir = image_base_dir
         self.image_file = image_file
