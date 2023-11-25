@@ -20,7 +20,7 @@ test_data = ImageDataset("../../input/ingredients_classifier/images/",
                          "../../input/ingredients_classifier/test_images.txt",
                          "../../input/ingredients_classifier/test_labels.txt",
                          "../../input/ingredients_classifier/recipes.txt",
-                         "../../input/ingredients_classifier/filtered_ingredients.txt",
+                         "../../input/ingredients_classifier/ingredients.txt",
                          False,
                          True)
 test_loader = DataLoader(

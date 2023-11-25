@@ -17,7 +17,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the ResNet50 model
 # filtered: 255, unfiltered: 1095
-extractor = FeatureExtractor(1095).load_extractor('../outputs/feature_extractor.pth')
+extractor = FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
 
 # train dataset
 train_dataset = ImageDataset("../../input/ingredients_classifier/images/",
