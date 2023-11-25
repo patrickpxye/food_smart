@@ -1,19 +1,16 @@
-import models
 import torch
 import joblib
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import svm
 from torch.utils.data import DataLoader
-from sklearn.multiclass import OneVsRestClassifier
 from dataset.dataset_builder import ImageDataset
+from feature_extractor.feature_extractor import FeatureExtractor
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the model
-model = models.model(requires_grad=False, out_features=1095).to(device)
-model.eval()
+extractor = FeatureExtractor(1095).load_extractor('../outputs/feature_extractor.pth')
 
 # load SVM model
 clf = joblib.load('../../outputs/ensemble_model.pkl')
@@ -37,7 +34,7 @@ for counter, data in enumerate(test_loader):
     # get all the index positions where value == 1
     target_indices = [i for i in range(len(target[0])) if target[0][i] == 1]
     # get the predictions by passing the image through the model
-    outputs = model(image)
+    outputs = extractor(image)
     # outputs = torch.sigmoid(outputs)
     outputs = outputs.detach().cpu()
     predictions = clf.predict(outputs)

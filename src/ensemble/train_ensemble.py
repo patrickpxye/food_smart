@@ -1,4 +1,3 @@
-import models
 import torch
 import joblib
 from tqdm import tqdm
@@ -11,14 +10,14 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.multioutput import ClassifierChain
+from feature_extractor.feature_extractor import FeatureExtractor
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the ResNet50 model
 # filtered: 255, unfiltered: 1095
-model = models.model(requires_grad=False, out_features=1095).to(device)
-model.eval()
+extractor = FeatureExtractor(1095).load_extractor('../outputs/feature_extractor.pth')
 
 # train dataset
 train_dataset = ImageDataset("../../input/ingredients_classifier/images/",
@@ -55,7 +54,7 @@ labels = []
 
 for i, data in tqdm(enumerate(train_loader), total=int(len(train_dataset) / train_loader.batch_size)):
     train_data, target = data['image'].to(device), data['label'].to(device)
-    outputs = model(train_data)
+    outputs = extractor(train_data)
     features.extend(outputs.detach().cpu().numpy())
     labels.extend(target.detach().cpu().numpy())
 

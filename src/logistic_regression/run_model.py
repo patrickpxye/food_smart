@@ -1,7 +1,6 @@
 import models
 import torch
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from dataset.dataset_builder import ImageDataset
 from torch.utils.data import DataLoader

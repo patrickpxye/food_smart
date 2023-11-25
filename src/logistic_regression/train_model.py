@@ -2,7 +2,6 @@ import models
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 
