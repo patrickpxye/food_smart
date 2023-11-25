@@ -18,7 +18,7 @@ def main():
     filter_ingredients.filter("../input/ingredients_classifier/ingredients.txt",
                                  "../input/ingredients_classifier/recipes.txt",
                                   "../input/ingredients_classifier/filtered_ingredients.txt")
-     '''
+    '''
 
     # train dataset
     train_dataset = ImageDataset("../input/ingredients_classifier/images/",
