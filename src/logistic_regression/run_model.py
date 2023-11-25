@@ -12,17 +12,17 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # initialize the model
 model = models.model(requires_grad=False, out_features=1095).to(device)
 # load the model checkpoint
-checkpoint = torch.load('../outputs/model.pth')
+checkpoint = torch.load('../../outputs/logistic_model.pth')
 # load model weights state_dict
 model.load_state_dict(checkpoint['model_state_dict'])
 model.eval()
 
 # prepare the test dataset and dataloader
-test_data = ImageDataset("../input/ingredients_classifier/images/",
-                         "../input/ingredients_classifier/test_images.txt",
-                         "../input/ingredients_classifier/test_labels.txt",
-                         "../input/ingredients_classifier/recipes.txt",
-                         "../input/ingredients_classifier/ingredients.txt",
+test_data = ImageDataset("../../input/ingredients_classifier/images/",
+                         "../../input/ingredients_classifier/test_images.txt",
+                         "../../input/ingredients_classifier/test_labels.txt",
+                         "../../input/ingredients_classifier/recipes.txt",
+                         "../../input/ingredients_classifier/ingredients.txt",
                          False,
                          True)
 test_loader = DataLoader(
@@ -53,5 +53,5 @@ for counter, data in enumerate(test_loader):
     plt.imshow(image)
     plt.axis('off')
     plt.title(f"PREDICTED: {string_predicted}\nACTUAL: {string_actual}")
-    plt.savefig(f"../outputs/inference_{counter}.jpg")
+    plt.savefig(f"../../outputs/inference_{counter}.jpg")
     # plt.show()

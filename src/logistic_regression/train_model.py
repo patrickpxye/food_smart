@@ -25,19 +25,19 @@ optimizer = optim.Adam(model.parameters(), lr=lr)
 criterion = nn.BCELoss()
 
 # train dataset
-train_data = ImageDataset("../input/ingredients_classifier/images/",
-                          "../input/ingredients_classifier/train_images.txt",
-                          "../input/ingredients_classifier/train_labels.txt",
-                          "../input/ingredients_classifier/recipes.txt",
-                          "../input/ingredients_classifier/ingredients.txt",
+train_data = ImageDataset("../../input/ingredients_classifier/images/",
+                          "../../input/ingredients_classifier/train_images.txt",
+                          "../../input/ingredients_classifier/train_labels.txt",
+                          "../../input/ingredients_classifier/recipes.txt",
+                          "../../input/ingredients_classifier/ingredients.txt",
                           True,
                           False)
 # validation dataset
-valid_data = ImageDataset("../input/ingredients_classifier/images/",
-                          "../input/ingredients_classifier/val_images.txt",
-                          "../input/ingredients_classifier/val_labels.txt",
-                          "../input/ingredients_classifier/recipes.txt",
-                          "../input/ingredients_classifier/ingredients.txt",
+valid_data = ImageDataset("../../input/ingredients_classifier/images/",
+                          "../../input/ingredients_classifier/val_images.txt",
+                          "../../input/ingredients_classifier/val_labels.txt",
+                          "../../input/ingredients_classifier/recipes.txt",
+                          "../../input/ingredients_classifier/ingredients.txt",
                           False,
                           False)
 # train data loader
@@ -75,7 +75,7 @@ torch.save({
     'model_state_dict': model.state_dict(),
     'optimizer_state_dict': optimizer.state_dict(),
     'loss': criterion,
-}, '../outputs/model.pth')
+}, '../../outputs/logistic_model.pth')
 # plot and save the train and validation line graphs
 plt.figure(figsize=(10, 7))
 plt.plot(train_loss, color='orange', label='train loss')
@@ -83,5 +83,5 @@ plt.plot(valid_loss, color='red', label='validataion loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-plt.savefig('../outputs/loss.png')
+plt.savefig('../../outputs/loss.png')
 plt.show()
