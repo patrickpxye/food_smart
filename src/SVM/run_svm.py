@@ -10,7 +10,7 @@ from feature_extractor.feature_extractor import FeatureExtractor
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the feature extractor
-extractor = FeatureExtractor(1095).load_extractor('../outputs/feature_extractor.pth')
+extractor = FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
 
 # load SVM model
 clf = joblib.load('../../outputs/svm_model.pkl')
