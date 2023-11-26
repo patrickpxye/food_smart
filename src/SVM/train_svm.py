@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 from sklearn.multiclass import OneVsRestClassifier
 from dataset.dataset_builder import ImageDataset
 import numpy as np
+from sklearn.svm import LinearSVC
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -57,7 +58,7 @@ for i, data in tqdm(enumerate(train_loader), total=int(len(train_dataset) / trai
 # Train SVM model
 features = np.array(features)
 labels = np.array(labels)
-clf = OneVsRestClassifier(svm.SVC())
+clf = OneVsRestClassifier(LinearSVC())
 clf.fit(features, labels)
 
 # Save the model
