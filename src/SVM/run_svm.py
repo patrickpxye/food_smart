@@ -38,9 +38,7 @@ for counter, data in enumerate(test_loader):
     # outputs = torch.sigmoid(outputs)
     outputs = outputs.detach().cpu()
     predictions = clf.predict(outputs)
-    print(f'prediction probability {predictions}')
     sorted_indices = np.argsort(predictions[0])
-    print(f'sorted indices {sorted_indices}')
     best = sorted_indices[-5:]
     string_predicted = ''
     string_actual = ''
