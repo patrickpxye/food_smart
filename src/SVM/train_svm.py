@@ -60,6 +60,7 @@ for i, data in tqdm(enumerate(train_loader), total=int(len(train_dataset) / trai
 features = np.array(features)
 labels = np.array(labels)
 clf = OneVsRestClassifier(LinearSVC(penalty='l1', C=1, dual=False))
+clf.fit(features, labels)
 
 '''
 parameters = {
