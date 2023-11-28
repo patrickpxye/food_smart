@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add the parent directory to the sys.path list
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import models
 import torch
 import torch.nn as nn
@@ -6,8 +12,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 
-from engine import train, validate
-from dataset_builder import ImageDataset
+# from engine import train, validate
+from dataset.dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
 from sklearn.cluster import KMeans
 from sklearn.manifold import TSNE
