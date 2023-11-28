@@ -5,8 +5,8 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 import matplotlib
 
-from engine import train, validate
-from dataset_builder import ImageDataset
+from deep_learning.engine import train, validate
+from dataset.dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
 
 matplotlib.style.use('ggplot')
