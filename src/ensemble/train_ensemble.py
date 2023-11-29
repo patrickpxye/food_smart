@@ -11,6 +11,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.multioutput import ClassifierChain
 from feature_extractor.feature_extractor import FeatureExtractor
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.multioutput import MultiOutputClassifier
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -61,12 +63,9 @@ for i, data in tqdm(enumerate(train_loader), total=int(len(train_dataset) / trai
 # Train ensemble model
 features = np.array(features)
 labels = np.array(labels)
-clf1 = OneVsRestClassifier(svm.SVC())
-clf2 = OneVsRestClassifier(LogisticRegression())
-clf3 = OneVsRestClassifier(DecisionTreeClassifier())
-ecf = VotingClassifier(estimators=[('svc', clf1), ('lr', clf2), ('dt', clf3)], voting='hard')
-chain = ClassifierChain(ecf)
-chain.fit(features, labels)
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+multi_target_forest = MultiOutputClassifier(clf, n_jobs=-1)
+multi_target_forest.fit(features, labels)
 
 # Save the model
-joblib.dump(chain, '../../outputs/ensemble_model.pkl')
+joblib.dump(multi_target_forest, '../../outputs/ensemble_model.pkl')
