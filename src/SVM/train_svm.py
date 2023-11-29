@@ -9,6 +9,7 @@ import numpy as np
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import GridSearchCV
 from sklearn import metrics
+from sklearn.multioutput import MultiOutputClassifier
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -59,7 +60,14 @@ for i, data in tqdm(enumerate(train_loader), total=int(len(train_dataset) / trai
 # Train SVM model
 features = np.array(features)
 labels = np.array(labels)
-clf = OneVsRestClassifier(LinearSVC(penalty='l1', C=1, dual=False))
+print(f'labels{np.unique(labels)}, actual {labels}')
+# Identify labels with more than one unique class
+valid_labels = [i for i in range(labels.shape[1]) if len(np.unique(labels[:, i])) > 1]
+# Filter out invalid labels
+labels = labels[:, valid_labels]
+
+svm = LinearSVC(penalty='l1', C=1, dual=False)
+clf = multilabel_classifier = MultiOutputClassifier(svm, n_jobs=-1)
 clf.fit(features, labels)
 
 '''
