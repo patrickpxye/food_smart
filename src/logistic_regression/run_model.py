@@ -1,20 +1,15 @@
-import models
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
 from dataset.dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
+from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# initialize the model
-model = models.model(requires_grad=False, out_features=1095).to(device)
-# load the model checkpoint
-checkpoint = torch.load('../../outputs/logistic_model.pth')
-# load model weights state_dict
-model.load_state_dict(checkpoint['model_state_dict'])
-model.eval()
+# initialize the feature extractor
+extractor = Resnet50FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
 
 # prepare the test dataset and dataloader
 test_data = ImageDataset("../../input/ingredients_classifier/images/",
@@ -35,7 +30,7 @@ for counter, data in enumerate(test_loader):
     # get all the index positions where value == 1
     target_indices = [i for i in range(len(target[0])) if target[0][i] == 1]
     # get the predictions by passing the image through the model
-    outputs = model(image)
+    outputs = extractor(image)
     outputs = torch.sigmoid(outputs)
     outputs = outputs.detach().cpu()
     sorted_indices = np.argsort(outputs[0])
