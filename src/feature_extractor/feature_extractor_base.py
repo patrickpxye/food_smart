@@ -1,4 +1,4 @@
-from torchvision import models as models
+from abc import abstractmethod
 
 import torch
 import torch.nn as nn
@@ -8,28 +8,17 @@ from deep_learning.engine import train, validate
 from torch.utils.data import DataLoader
 
 
-class FeatureExtractor:
+class FeatureExtractorBase:
     def __init__(self, out_features=None):
         self.out_features = out_features
 
-    def fixed_extractor(self):
-        resnet50_model = models.resnet50(progress=True, pretrained=True)
-        # to freeze the hidden layers
-        for param in resnet50_model.parameters():
-            param.requires_grad = False
+    @abstractmethod
+    def name(self):
+        pass
 
-        resnet50_model.fc = nn.Identity()
-        return resnet50_model
-
+    @abstractmethod
     def trainable_extractor(self):
-        resnet50_model = models.resnet50(progress=True, pretrained=True)
-        # to freeze the hidden layers
-        for param in resnet50_model.parameters():
-            param.requires_grad = False
-
-        # make the classification layer learnable
-        resnet50_model.fc = nn.Linear(2048, self.out_features)
-        return resnet50_model
+        pass
 
     def train_extractor(self, train_data, valid_data, model_file, epochs=20, lr=0.0001, batch_size=32):
         # initialize the computation device

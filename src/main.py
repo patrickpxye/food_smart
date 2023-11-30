@@ -1,7 +1,8 @@
 from dataset.dataset_builder import ImageDataset
-import dataset.filter_ingredients
-from feature_extractor.feature_extractor import FeatureExtractor
-
+from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
+from feature_extractor.efficientnet_feature_extractor import EfficientNetFeatureExtractor
+from feature_extractor.inceptionv3_feature_extractor import InceptionV3FeatureExtractor
+from feature_extractor.vgg16_feature_extractor import VGG16FeatureExtractor
 def main():
 
     '''
@@ -36,8 +37,13 @@ def main():
                                  "../input/ingredients_classifier/ingredients.txt",
                                  False,
                                  False)
-    saved_model_file = '../outputs/feature_extractor.pth'
-    extractor = FeatureExtractor(1095)
+
+    # extractor = Resnet50FeatureExtractor(1095)
+    extractor = EfficientNetFeatureExtractor(1095)
+    # extractor = InceptionV3FeatureExtractor(1095)
+    # extractor = VGG16FeatureExtractor(1095)
+
+    saved_model_file = f'../outputs/{extractor.name}_feature_extractor.pth'
     extractor.train_extractor(train_dataset, valid_dataset, saved_model_file, epochs=12, lr=0.01, batch_size=32)
 
 if __name__ == "__main__":

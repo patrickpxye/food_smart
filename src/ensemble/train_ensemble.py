@@ -4,7 +4,7 @@ import numpy as np
 from tqdm import tqdm
 from torch.utils.data import DataLoader
 from dataset.dataset_builder import ImageDataset
-from feature_extractor.feature_extractor import FeatureExtractor
+from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.multioutput import MultiOutputClassifier
 
@@ -13,7 +13,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the ResNet50 model
 # filtered: 255, unfiltered: 1095
-extractor = FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
+extractor = Resnet50FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
 
 # train dataset
 train_dataset = ImageDataset("../../input/ingredients_classifier/images/",

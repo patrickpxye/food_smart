@@ -4,13 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from dataset.dataset_builder import ImageDataset
-from feature_extractor.feature_extractor import FeatureExtractor
+from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the feature extractor
-extractor = FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
+extractor = Resnet50FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
 
 # load SVM model
 clf = joblib.load('../../outputs/svm_model.pkl')
