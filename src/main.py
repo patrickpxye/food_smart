@@ -44,7 +44,7 @@ def main():
     # extractor = VGG16FeatureExtractor(1095)
 
     saved_model_file = f'../outputs/{extractor.name}_feature_extractor.pth'
-    extractor.train_extractor(train_dataset, valid_dataset, saved_model_file, epochs=12, lr=0.01, batch_size=32)
+    extractor.train_extractor(train_dataset, valid_dataset, saved_model_file, epochs=20, lr=0.0001, batch_size=32)
 
 if __name__ == "__main__":
     main()
