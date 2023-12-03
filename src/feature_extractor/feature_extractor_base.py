@@ -49,16 +49,16 @@ class FeatureExtractorBase:
         valid_loss = []
         for epoch in range(epochs):
             print(f"Epoch {epoch + 1} of {epochs}")
-            train_epoch_loss = train(
+            train_epoch_loss, train_accuracy = train(
                 model, train_loader, optimizer, criterion, train_data, device
             )
-            valid_epoch_loss = validate(
+            valid_epoch_loss,valid_accuracy = validate(
                 model, valid_loader, criterion, valid_data, device
             )
             train_loss.append(train_epoch_loss)
             valid_loss.append(valid_epoch_loss)
-            print(f"Train Loss: {train_epoch_loss:.4f}")
-            print(f'Val Loss: {valid_epoch_loss:.4f}')
+            print(f"Train Loss: {train_epoch_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
+            print(f'Val Loss: {valid_epoch_loss:.4f}, Val Accuracy: {valid_accuracy:.4f}')
 
         # save the trained model to disk
         torch.save({

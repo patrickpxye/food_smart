@@ -55,10 +55,10 @@ train_loss = []
 valid_loss = []
 for epoch in range(epochs):
     print(f"Epoch {epoch+1} of {epochs}")
-    train_epoch_loss = train(
+    train_epoch_loss, _ = train(
         model, train_loader, optimizer, criterion, train_data, device
     )
-    valid_epoch_loss = validate(
+    valid_epoch_loss, _ = validate(
         model, valid_loader, criterion, valid_data, device
     )
     train_loss.append(train_epoch_loss)
