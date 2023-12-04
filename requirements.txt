@@ -16,4 +16,4 @@ torchvision
 pandas
 xgboost
 scikit-learn
-sklearn
+efficientnet_pytorch

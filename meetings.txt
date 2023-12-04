@@ -1,16 +1,16 @@
 Meetin 11/4
     1. We will experiment and compare these models:
         a. SVM (Shoupei)
-        b. Adaboost for Decision Tree (Patrick)
-        c. XGBboost for Decision Tree (Patrick)
-        d. Doubled K-means (Jordan, Patrick)
-        e. Baseline done: logistic regression (Shoupei)
+        b. XGBboost for Decision Tree (Patrick)
+        c. Doubled K-means (Jordan, Patrick)
+        d. Baseline done: logistic regression (Shoupei)
     2. Prove these models don't work
         GDA Model: prove it's compute heavy
         Softmax Model: prove it's impossible for multi-labelling
     3. We make an argument about design choices (Patrick)
-        - Reducing hypothesis space (ingredient classes): We are effectively lowering variance with a gain of computational efficiency, at the cost of increased bias.
-        - Resnet as feature extractor: We are effectively lowering bias with effcient feature captures, at the cost of training time and higher variance.
+        - (Chapter 8) Reducing hypothesis space (ingredient classes): We are effectively lowering variance with a gain of computational efficiency, at the cost of increased bias.
+        - (Chapter 8) Resnet as feature extractor: We are effectively lowering bias with effcient feature captures, at the cost of training time and higher variance.
+        - (Chapter 7) Neuralnetwork: learned feature engineering.
 
 
 Meeting 10/24

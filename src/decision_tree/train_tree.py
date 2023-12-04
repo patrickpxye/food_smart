@@ -147,4 +147,4 @@ xgb_models = train_xgb(feature_model, train_loader, device, val_loader)
 
 # Save each trained XGBoost model
 for i, model in enumerate(xgb_models):
-    model.save_model(f'trained_models/xgb_model_{i}.json')
+    model.save_model(f'trained_models_2/xgb_model_{i}.json')

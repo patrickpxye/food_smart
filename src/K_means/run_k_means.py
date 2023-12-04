@@ -21,6 +21,7 @@ from collections import defaultdict
 from joblib import load
 import numpy as np
 import pickle
+from sklearn.metrics import f1_score, precision_score, recall_score
 
 
 matplotlib.style.use('ggplot')
@@ -111,6 +112,37 @@ features = extract_features(pretrained_resnet, valid_loader)
 predicted_clusters = kmeans.predict(features)
 # print("predicted clusters", predicted_clusters)
 
+def compute_metrics(actual_labels, predicted_labels):
+    f1_scores = []
+    precisions = []
+    recalls = []
+    
+    for actual, predicted in zip(actual_labels, predicted_labels):
+        union_labels = actual.union(predicted)
+        actual_binary = [1 if label in actual else 0 for label in union_labels]
+        predicted_binary = [1 if label in predicted else 0 for label in union_labels]
+
+        f1 = f1_score(actual_binary, predicted_binary, average='micro')
+        precision = precision_score(actual_binary, predicted_binary, average='micro')
+        recall = recall_score(actual_binary, predicted_binary, average='micro')
+
+        f1_scores.append(f1)
+        precisions.append(precision)
+        recalls.append(recall)
+
+        # Debugging print
+        print(f"Actual: {actual}, Predicted: {predicted}, F1: {f1}, Precision: {precision}, Recall: {recall}")
+
+    avg_f1 = sum(f1_scores) / len(f1_scores)
+    avg_precision = sum(precisions) / len(precisions)
+    avg_recall = sum(recalls) / len(recalls)
+    
+    return avg_f1, avg_precision, avg_recall
+
+actual_labels = []
+predicted_labels = []
+
+
 for counter, data in enumerate(valid_loader):
     images, targets = data['image'].to(device), data['label']
     
@@ -160,4 +192,12 @@ for counter, data in enumerate(valid_loader):
         plt.title(f"PREDICTED: {string_predicted}\nACTUAL: {string_actual}")
         plt.savefig(f"outputs_k_means/inference_{counter}_{i}.jpg")
         plt.close()
+
+        actual_labels.append(set(actual_label_names))
+        predicted_labels.append(all_ingredients)
         
+# After the loop
+average_f1, average_precision, average_recall = compute_metrics(actual_labels, predicted_labels)
+print(f"Average F1 Score: {average_f1}")
+print(f"Average Precision: {average_precision}")
+print(f"Average Recall: {average_recall}")
