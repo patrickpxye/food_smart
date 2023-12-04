@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from dataset.dataset_builder import ImageDataset
 from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
+from sklearn.metrics import f1_score, precision_score, recall_score
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -28,6 +29,39 @@ test_loader = DataLoader(
     batch_size=1,
     shuffle=False
 )
+
+def evaluate_svm(extractor, clf, test_loader, device, num_batches=1):
+    val_features = []
+    val_labels = []
+    batch_count = 0
+
+    with torch.no_grad():
+        for data in test_loader:
+            if num_batches is not None and batch_count >= num_batches:
+                break
+            inputs, labels = data['image'].to(device), data['label'].to(device)
+            features = extractor(inputs).detach().cpu().numpy()
+            val_features.append(features)
+            val_labels.append(labels.detach().cpu().numpy())
+            batch_count += 1
+
+    val_features = np.concatenate(val_features, axis=0)
+    val_labels = np.concatenate(val_labels, axis=0)
+
+    predictions = clf.predict(val_features)
+
+    f1_micro = f1_score(val_labels, predictions, average='micro')
+    precision_score_micro = precision_score(val_labels, predictions, average='micro')
+    recall_score_micro = recall_score(val_labels, predictions, average='micro')
+
+    print(f"F1 Score (Micro): {f1_micro}")
+    print(f"Precision (Micro): {precision_score_micro}")
+    print(f"Recall (Micro): {recall_score_micro}")
+
+    return f1_micro, precision_score_micro, recall_score_micro
+
+f1, precision, recall = evaluate_svm(extractor, clf, test_loader, device, 100)
+
 
 for counter, data in enumerate(test_loader):
     image, target = data['image'].to(device), data['label']
