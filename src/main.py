@@ -39,12 +39,12 @@ def main():
                                  False)
 
     # extractor = Resnet50FeatureExtractor(1095)
-    extractor = EfficientNetFeatureExtractor(1095)
-    # extractor = InceptionV3FeatureExtractor(1095)
+    # extractor = EfficientNetFeatureExtractor(1095)
+    extractor = InceptionV3FeatureExtractor(1095)
     # extractor = VGG16FeatureExtractor(1095)
 
     saved_model_file = f'../outputs/{extractor.name}_feature_extractor.pth'
-    extractor.train_extractor(train_dataset, valid_dataset, saved_model_file, epochs=20, lr=0.001, batch_size=32)
+    extractor.train_extractor(train_dataset, valid_dataset, saved_model_file, epochs=17, lr=0.005, batch_size=32)
 
 if __name__ == "__main__":
     main()

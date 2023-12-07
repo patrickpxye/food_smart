@@ -7,13 +7,19 @@ from dataset.dataset_builder import ImageDataset
 from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.multioutput import MultiOutputClassifier
+from feature_extractor.efficientnet_feature_extractor import EfficientNetFeatureExtractor
+from feature_extractor.vgg16_feature_extractor import VGG16FeatureExtractor
+from feature_extractor.inceptionv3_feature_extractor import InceptionV3FeatureExtractor
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the ResNet50 model
 # filtered: 255, unfiltered: 1095
-extractor = Resnet50FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
+#extractor = Resnet50FeatureExtractor(1095).load_extractor('../../feature_extractor/efficientNet_feature_extractor.pth')
+#extractor = EfficientNetFeatureExtractor(1095).load_extractor('../../feature_extractor/efficientNet_feature_extractor.pth')
+#extractor = VGG16FeatureExtractor(1095).load_extractor('../../feature_extractor/vgg16_feature_extractor.pth')
+extractor = InceptionV3FeatureExtractor(1095).load_extractor('../../feature_extractor/InceptronV3_feature_extractor.pth')
 
 # train dataset
 train_dataset = ImageDataset("../../input/ingredients_classifier/images/",
@@ -62,4 +68,4 @@ multi_target_forest = MultiOutputClassifier(clf, n_jobs=-1)
 multi_target_forest.fit(features, labels)
 
 # Save the model
-joblib.dump(multi_target_forest, '../../outputs/ensemble_model.pkl')
+joblib.dump(multi_target_forest, '../../outputs/inceptionv3_ensemble_model.pkl')

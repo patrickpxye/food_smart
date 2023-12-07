@@ -7,13 +7,20 @@ import numpy as np
 from sklearn.svm import LinearSVC
 from sklearn.multioutput import MultiOutputClassifier
 from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
+from feature_extractor.efficientnet_feature_extractor import EfficientNetFeatureExtractor
+from feature_extractor.vgg16_feature_extractor import VGG16FeatureExtractor
+
+from feature_extractor.inceptionv3_feature_extractor import InceptionV3FeatureExtractor
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the ResNet50 model
 # filtered: 255, unfiltered: 1095
-extractor = Resnet50FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
+#extractor = Resnet50FeatureExtractor(1095).load_extractor('../../feature_extractor/efficientNet_feature_extractor.pth')
+#extractor = EfficientNetFeatureExtractor(1095).load_extractor('../../feature_extractor/efficientNet_feature_extractor.pth')
+#extractor = VGG16FeatureExtractor(1095).load_extractor('../../feature_extractor/vgg16_feature_extractor.pth')
+extractor = InceptionV3FeatureExtractor(1095).load_extractor('../../feature_extractor/InceptronV3_feature_extractor.pth')
 
 # train dataset
 train_dataset = ImageDataset("../../input/ingredients_classifier/images/",
@@ -64,8 +71,8 @@ valid_labels = [i for i in range(labels.shape[1]) if len(np.unique(labels[:, i])
 labels = labels[:, valid_labels]
 
 svm = LinearSVC(penalty='l1', C=1, dual=False)
-clf = multilabel_classifier = MultiOutputClassifier(svm, n_jobs=-1)
+clf = MultiOutputClassifier(svm, n_jobs=-1)
 clf.fit(features, labels)
 
 # Save the model
-joblib.dump(clf, '../../outputs/svm_model.pkl')
+joblib.dump(clf, '../../outputs/inceptionv3_svm_model.pkl')
