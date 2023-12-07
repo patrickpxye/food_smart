@@ -9,6 +9,7 @@ from sklearn.multioutput import MultiOutputClassifier
 from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
 from feature_extractor.efficientnet_feature_extractor import EfficientNetFeatureExtractor
 from feature_extractor.vgg16_feature_extractor import VGG16FeatureExtractor
+
 from feature_extractor.inceptionv3_feature_extractor import InceptionV3FeatureExtractor
 
 # initialize the computation device
