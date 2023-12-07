@@ -17,7 +17,8 @@ from sklearn.cluster import KMeans
 from sklearn.manifold import TSNE
 from torchvision.models import resnet50, ResNet50_Weights
 import numpy as np
-from collections import defaultdict
+from collections import defaultdict, Counter
+# from efficientnet_pytorch import EfficientNet
 from joblib import load
 import numpy as np
 import pickle
@@ -49,7 +50,7 @@ valid_data = ImageDataset(
                        "../../input/ingredients_classifier/filtered_ingredients.txt",
                        False,
                        False, 
-                       num_samples=32*3)
+                       )
 
 # print("train data len", train_data.index_to_ingredient.__len__())
 # 255
@@ -72,6 +73,20 @@ valid_loader = DataLoader(
 pretrained_resnet = resnet50(weights=ResNet50_Weights.IMAGENET1K_V1)
 pretrained_resnet = torch.nn.Sequential(*(list(pretrained_resnet.children())[:-1]))
 pretrained_resnet.eval()
+
+# # Load the pretrained EfficientNet-B7 model
+# efficientnet_model = EfficientNet.from_pretrained('efficientnet-b7')
+
+# # Freeze all the layers
+# for param in efficientnet_model.parameters():
+#     param.requires_grad = False
+
+# # Modify the model to remove the last classification layer
+# # EfficientNet models have their classifier in '_fc', so we set it to an identity layer
+# efficientnet_model._fc = torch.nn.Identity()
+
+# # Set the model to evaluation mode
+# efficientnet_model.eval()
 
 # Load the saved K-Means model
 kmeans = load('saved_outputs_multi/kmeans_model.joblib')
@@ -135,7 +150,7 @@ def compute_metrics(actual_labels, predicted_labels):
         
         actual_set = set(actual) 
         count = sum(pred in actual_set for pred in predicted)
-        score = count/len(actual)
+        score = count/ max(len(actual), 1)
         scores.append(score)
                
 
@@ -152,6 +167,7 @@ def compute_metrics(actual_labels, predicted_labels):
 
 actual_labels = []
 predicted_labels = []
+top_n_predicted_labels = []
 
 counter_predicted_label = 0
 total_plates_that_we_can_predict = 0
@@ -205,6 +221,7 @@ for counter, data in enumerate(valid_loader):
             # Aggregate all ingredients from these clusters
             
             all_ingredients = set()
+            all_ingredients_arr = []
 
             for index in unique_cluster_indices:
                 # Get the labels assigned by the KMeans model
@@ -222,40 +239,67 @@ for counter, data in enumerate(valid_loader):
                         for  y in ingredient_idx:
                             if y <= train_data.index_to_ingredient.__len__():
                                 all_ingredients.add(train_data.index_to_ingredient[y])
+                                all_ingredients_arr.append(train_data.index_to_ingredient[y])
                             else :
                                 print(f"Index {y} not in range of index data.")
                                 continue
                     else:
                         print(f"Index {idx} not in range of train data.")
                         continue
+            ing_counts = Counter(all_ingredients_arr)
+    
+            # Get the top n most common labels
+            # The most_common method returns a list of tuples (label, count)
+            top_n = ing_counts.most_common(7)
 
+            # Extract just the labels from the tuples
+            top_n_ing = [label for label, count in top_n]
             # Convert the set of all ingredients to a list and then to a string
-            predicted_ingredients = '    '.join(list(all_ingredients))
-            # print("Predicted Ingredients:", predicted_ingredients)
+            predicted_ingredients = '    '.join(list(top_n_ing))
+            print("Predicted Ingredients:", predicted_ingredients)
             target_indices = np.where(targets[i] == 1)[0]
             actual_label_names = [valid_data.index_to_ingredient[idx] for idx in target_indices]
-            # print("Actual Ingredients:", actual_label_names)
+            print("Actual Ingredients:", actual_label_names)
 
             # Plotting the image
-            plt.imshow(image)
-            plt.axis('off')
-            string_predicted = f"{predicted_ingredients} "
-            string_actual = '    '.join(actual_label_names)
-            plt.title(f"PREDICTED: {string_predicted}\nACTUAL: {string_actual}")
-            plt.savefig(f"outputs_k_means/inference_{counter}_{i}.jpg")
-            plt.close()
+            # plt.imshow(image)
+            # plt.axis('off')
+            # string_predicted = f"{top_n_ing} "
+            # string_actual = '    '.join(actual_label_names)
+            # plt.title(f"PREDICTED: {string_predicted}\nACTUAL: {string_actual}")
+            # # plt.savefig(f"outputs_k_means_multi/inference_{counter}_{i}.jpg")
+            # plt.close()
             
             # only counting if we can predict the image cluster and the image cluster is in the ingredient cluster
             
             actual_labels.append(set(actual_label_names))
             predicted_labels.append(all_ingredients)
+            top_n_predicted_labels.append(top_n_ing)
             
 # After the loop
-average_f1, average_precision, average_recall, average_score = compute_metrics(actual_labels, predicted_labels)
+average_f1_all_pre, average_precision_all_pre, average_recall_all_pre, average_score_all_pre = compute_metrics(actual_labels, predicted_labels)
+average_f1_top_pre, average_precision_top_pre, average_recall_top_pre, average_score_top_pre = compute_metrics(actual_labels, top_n_predicted_labels)
 # print(f"Number of correct labels: {counter_predicted_label/valid_data.__len__()}")
 print(f"Total number of plates that we can predict: {total_plates_that_we_can_predict}, Total number of plates: {valid_data.__len__()}")
 print(f"Number of correct labels: {counter_predicted_label/total_plates_that_we_can_predict}")
-print(f"Average F1 Score: {average_f1}")
-print(f"Average Precision: {average_precision}")
-print(f"Average Recall: {average_recall}")
-print(f"Average Score: {average_score}")
+print(f"Average F1 Score all Predictions: {average_f1_all_pre}")
+print(f"Average Precision all Predictions: {average_precision_all_pre}")
+print(f"Average Recall all Predictions: {average_recall_all_pre}")
+print(f"Average Score all Predictions: {average_score_all_pre}")
+
+print(f"Average F1 Score top Predictions: {average_f1_top_pre}")
+print(f"Average Precision top Predictions: {average_precision_top_pre}")
+print(f"Average Recall top Predictions: {average_recall_top_pre}")
+print(f"Average Score top Predictions: {average_score_top_pre}")
+
+# 5 image, 5 ingredient clusters, top 5 ingredients
+# Total number of plates that we can predict: 634, Total number of plates: 634
+# Number of correct labels: 0.055205047318611984
+# Average F1 Score all Predictions: 0.034984704318865634
+# Average Precision all Predictions: 0.034984704318865634
+# Average Recall all Predictions: 0.034984704318865634
+# Average Score all Predictions: 0.971895546619522
+# Average F1 Score top Predictions: 0.17305936976260555
+# Average Precision top Predictions: 0.17305936976260555
+# Average Recall top Predictions: 0.17305936976260555
+# Average Score top Predictions: 0.24296245754735785

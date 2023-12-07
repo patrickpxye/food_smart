@@ -17,6 +17,7 @@ from torch.utils.data import DataLoader
 from sklearn.cluster import KMeans
 from sklearn.manifold import TSNE
 from torchvision.models import resnet50, ResNet50_Weights
+from efficientnet_pytorch import EfficientNet
 import numpy as np
 from collections import defaultdict, Counter
 from joblib import dump
@@ -92,6 +93,20 @@ pretrained_resnet = resnet50(weights=ResNet50_Weights.IMAGENET1K_V1)
 pretrained_resnet = torch.nn.Sequential(*(list(pretrained_resnet.children())[:-1]))
 pretrained_resnet.eval()
 
+# Load the pretrained EfficientNet-B7 model
+efficientnet_model = EfficientNet.from_pretrained('efficientnet-b7')
+
+# Freeze all the layers
+for param in efficientnet_model.parameters():
+    param.requires_grad = False
+
+# Modify the model to remove the last classification layer
+# EfficientNet models have their classifier in '_fc', so we set it to an identity layer
+efficientnet_model._fc = torch.nn.Identity()
+
+# Set the model to evaluation mode
+efficientnet_model.eval()
+
 # Function to extract features using the pretrained model
 def extract_features(model, dataloader):
     features = []
@@ -110,7 +125,11 @@ def extract_features(model, dataloader):
 image_dataloader = train_loader 
 print("extracting features")
 # Extract features
-features = extract_features(pretrained_resnet, image_dataloader)
+# MODEL_IN_USE = "resnet50"
+MODEL_IN_USE = "efficientnet"
+model_being_used = efficientnet_model if MODEL_IN_USE == "efficientnet" else pretrained_resnet
+# features = extract_features(pretrained_resnet, image_dataloader)
+features = extract_features(model_being_used, image_dataloader)
 
 print("finished getting features")
 # Perform clustering on the extracted features
@@ -120,9 +139,9 @@ cluster_labels = kmeans.fit_predict(features)
 print("finished clustering")
 
 # Save the entire K-Means model
-dump(kmeans, 'saved_outputs_multi/kmeans_model.joblib')
+dump(kmeans, 'saved_outputs_multi_{model_being_used}/kmeans_model.joblib')
 # Save the cluster labels
-np.save('saved_outputs_multi/cluster_labels.npy', cluster_labels)
+np.save('saved_outputs_multi_{model_being_used}/cluster_labels.npy', cluster_labels)
 
 # Convert the list of features to a NumPy array
 features_array = np.array(features)
@@ -146,7 +165,7 @@ for label, cluster_id in zip(data_labels, cluster_labels):
 most_common_labels = {cluster: top_n_common_labels(labels, n=TOP_N) for cluster, labels in cluster_to_labels.items()}
 print("most common labels ", most_common_labels)
 # Save the dictionary using Pickle
-with open('saved_outputs_multi/most_common_labels.pkl', 'wb') as fp:
+with open('saved_outputs_multi_{model_being_used}/most_common_labels.pkl', 'wb') as fp:
     pickle.dump(most_common_labels, fp)
 # Calculate cluster centers
 cluster_centers = {cluster: np.mean(reduced_features[cluster_labels == cluster], axis=0) for cluster in most_common_labels}
@@ -182,9 +201,9 @@ kmeans_ingredients = KMeans(n_clusters=num_clusters, random_state=0)
 ingredient_cluster_labels = kmeans_ingredients.fit_predict(ingredient_matrix)
 
 # Save the entire K-Means model
-dump(kmeans_ingredients, 'saved_outputs_multi/kmeans_model_ingredients.joblib')
+dump(kmeans_ingredients, 'saved_outputs_multi_{model_being_used}/kmeans_model_ingredients.joblib')
 # Save the cluster labels
-np.save('saved_outputs_multi/cluster_labels_ingredients.npy', ingredient_cluster_labels)
+np.save('saved_outputs_multi_{model_being_used}/cluster_labels_ingredients.npy', ingredient_cluster_labels)
 
 data_labels = [train_data.get_label(i) for i in range(train_data.__len__())]
 # Collect labels for each cluster
@@ -197,7 +216,7 @@ for label, cluster_id in zip(data_labels, ingredient_cluster_labels):
 most_common_labels_ingredients = {cluster: top_n_common_labels(labels, n=TOP_N) for cluster, labels in cluster_to_labels.items()}
 
 # Save the dictionary using Pickle
-with open('saved_outputs_multi/most_common_labels_ingredients.pkl', 'wb') as fp:
+with open('saved_outputs_multi_{model_being_used}/most_common_labels_ingredients.pkl', 'wb') as fp:
     pickle.dump(most_common_labels_ingredients, fp)
 
 tsne = TSNE(n_components=2, random_state=0)
