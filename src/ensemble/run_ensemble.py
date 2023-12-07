@@ -6,15 +6,21 @@ from torch.utils.data import DataLoader
 from dataset.dataset_builder import ImageDataset
 from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
 from sklearn.metrics import f1_score, precision_score, recall_score
+from feature_extractor.efficientnet_feature_extractor import EfficientNetFeatureExtractor
+from feature_extractor.vgg16_feature_extractor import VGG16FeatureExtractor
+from feature_extractor.inceptionv3_feature_extractor import InceptionV3FeatureExtractor
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # initialize the model
-extractor = Resnet50FeatureExtractor(1095).load_extractor('../../outputs/feature_extractor.pth')
+#extractor = Resnet50FeatureExtractor(1095).load_extractor('../../feature_extractor/efficientNet_feature_extractor.pth')
+# extractor = EfficientNetFeatureExtractor(1095).load_extractor('../../feature_extractor/efficientNet_feature_extractor.pth')
+#extractor = VGG16FeatureExtractor(1095).load_extractor('../../feature_extractor/vgg16_feature_extractor.pth')
+extractor = InceptionV3FeatureExtractor(1095).load_extractor('../../feature_extractor/InceptronV3_feature_extractor.pth')
 
 # load SVM model
-clf = joblib.load('../../outputs/ensemble_model.pkl')
+clf = joblib.load('../../outputs/inceptionv3_ensemble_model.pkl')
 
 # prepare the test dataset and dataloader
 test_data = ImageDataset("../../input/ingredients_classifier/images/",
