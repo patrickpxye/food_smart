@@ -4,7 +4,6 @@ import os
 # Add the parent directory to the sys.path list
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import models
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -19,7 +18,7 @@ from sklearn.cluster import KMeans
 from sklearn.manifold import TSNE
 from torchvision.models import resnet50, ResNet50_Weights
 import numpy as np
-from collections import defaultdict
+from collections import defaultdict, Counter
 from joblib import dump
 import pickle
 
@@ -42,7 +41,7 @@ train_data = ImageDataset(
                     "../../input/ingredients_classifier/train_images.txt",
                        "../../input/ingredients_classifier/train_labels.txt",
                        "../../input/ingredients_classifier/recipes.txt",
-                       "../../input/ingredients_classifier/ingredients.txt",
+                       "../../input/ingredients_classifier/filtered_ingredients.txt",
                        True,
                        False
                        )
@@ -52,12 +51,27 @@ valid_data = ImageDataset(
                         "../../input/ingredients_classifier/val_images.txt",
                        "../../input/ingredients_classifier/val_labels.txt",
                        "../../input/ingredients_classifier/recipes.txt",
-                       "../../input/ingredients_classifier/ingredients.txt",
+                       "../../input/ingredients_classifier/filtered_ingredients.txt",
                        False,
                        False)
 print("finished loading data")
+
 def most_common_label(labels):
-    return max(set(labels), key=labels.count)
+    return max(set(), key=labels.count)
+
+def top_n_common_labels(labels, n=5):
+    # Count the occurrences of each label
+    label_counts = Counter(labels)
+    
+    # Get the top n most common labels
+    # The most_common method returns a list of tuples (label, count)
+    top_n = label_counts.most_common(n)
+
+    # Extract just the labels from the tuples
+    top_n_labels = [label for label, count in top_n]
+
+    return top_n_labels
+
 # train data loader
 train_loader = DataLoader(
     train_data,
@@ -106,9 +120,9 @@ cluster_labels = kmeans.fit_predict(features)
 print("finished clustering")
 
 # Save the entire K-Means model
-dump(kmeans, 'kmeans_model.joblib')
+dump(kmeans, 'saved_outputs/kmeans_model.joblib')
 # Save the cluster labels
-np.save('cluster_labels.npy', cluster_labels)
+np.save('saved_outputs/cluster_labels.npy', cluster_labels)
 
 # Convert the list of features to a NumPy array
 features_array = np.array(features)
@@ -132,7 +146,7 @@ for label, cluster_id in zip(data_labels, cluster_labels):
 most_common_labels = {cluster: most_common_label(labels) for cluster, labels in cluster_to_labels.items()}
 
 # Save the dictionary using Pickle
-with open('most_common_labels.pkl', 'wb') as fp:
+with open('saved_outputs/most_common_labels.pkl', 'wb') as fp:
     pickle.dump(most_common_labels, fp)
 # Calculate cluster centers
 cluster_centers = {cluster: np.mean(reduced_features[cluster_labels == cluster], axis=0) for cluster in most_common_labels}
@@ -167,9 +181,9 @@ kmeans_ingredients = KMeans(n_clusters=num_clusters, random_state=0)
 ingredient_cluster_labels = kmeans_ingredients.fit_predict(ingredient_matrix)
 
 # Save the entire K-Means model
-dump(kmeans_ingredients, 'kmeans_model_ingredients.joblib')
+dump(kmeans_ingredients, 'saved_outputs/kmeans_model_ingredients.joblib')
 # Save the cluster labels
-np.save('cluster_labels_ingredients.npy', ingredient_cluster_labels)
+np.save('saved_outputs/cluster_labels_ingredients.npy', ingredient_cluster_labels)
 
 data_labels = [train_data.get_label(i) for i in range(train_data.__len__())]
 # Collect labels for each cluster
@@ -184,7 +198,7 @@ def most_common_label(labels):
 most_common_labels_ingredients = {cluster: most_common_label(labels) for cluster, labels in cluster_to_labels.items()}
 
 # Save the dictionary using Pickle
-with open('most_common_labels_ingredients.pkl', 'wb') as fp:
+with open('saved_outputs/most_common_labels_ingredients.pkl', 'wb') as fp:
     pickle.dump(most_common_labels_ingredients, fp)
 
 tsne = TSNE(n_components=2, random_state=0)
@@ -224,73 +238,3 @@ plt.show()
 
 ######################################### end  #########################################
 
-
-######################################### Test on valid data  #########################################
-
-# # Function to predict clusters for new data
-# def predict_clusters(model, dataloader, kmeans_model):
-#     # Extract features using the pretrained model
-#     features = extract_features(model, dataloader)
-#     # Predict the clusters
-#     predicted_cluster_labels = kmeans_model.predict(features)
-#     return predicted_cluster_labels
-
-# # Predict the clusters for the validation dataset
-# valid_loader = DataLoader(valid_data, batch_size=batch_size, shuffle=False)
-# predicted_clusters = predict_clusters(pretrained_resnet, valid_loader, kmeans)
-
-# # Map predicted clusters to the most common label names
-# predicted_labels = [most_common_labels[cluster] for cluster in predicted_clusters]
-
-# # Retrieve associated items from the ingredient clusters based on predicted label names
-# predicted_ingredients = []
-# for label in predicted_labels:
-#     # Find the cluster id for this label
-#     cluster_id = list(most_common_labels.values()).index(label)
-#     # Get all items associated with this cluster id
-#     associated_items = cluster_to_labels[cluster_id]
-#     predicted_ingredients.append(associated_items)
-    
-# Assuming valid_data has a method index_to_ingredient that maps indices to ingredient names
-# and a method get_label to get the actual label name for an item
-
-# ######################################### Test on valid data  #########################################
-# for counter, data in enumerate(valid_loader):
-#     image, target = data['image'].to(device), data['label']
-    
-#     # Extract features for the image
-#     features = pretrained_resnet(image)
-#     features = features.squeeze().detach().cpu().numpy()
-    
-#     # Predict the cluster
-#     predicted_cluster = kmeans.predict([features])
-#     # Get the most common label name for the predicted cluster
-#     predicted_label_name = most_common_labels[predicted_cluster[0]]
-    
-#     # Find the cluster ID for the predicted label name
-#     predicted_cluster_id = list(most_common_labels.values()).index(predicted_label_name)
-    
-#     # Get unique ingredients from the ingredient clusters for the predicted label name
-#     unique_ingredients_indices = np.unique(ingredient_matrix[ingredient_cluster_labels == predicted_cluster_id])
-#     predicted_ingredients = [train_data.index_to_ingredient[idx] for idx in unique_ingredients_indices if idx != 0]
-    
-#     # Concatenate the ingredient names
-#     string_predicted_ingredients = '    '.join(predicted_ingredients)
-    
-#     # Get the actual label names for the target
-#     target_indices = [i for i in range(len(target[0])) if target[0][i] == 1]
-#     actual_label_names = [valid_data.index_to_ingredient[idx] for idx in target_indices]
-
-#     # Convert image for plotting
-#     image = image.squeeze(0)
-#     image = image.detach().cpu().numpy()
-#     image = np.transpose(image, (1, 2, 0))
-#     plt.imshow(image)
-#     plt.axis('off')
-
-#     # Create the title string with predicted and actual labels
-#     string_predicted = f"{string_predicted_ingredients} "
-#     string_actual = '    '.join(actual_label_names)
-#     plt.title(f"PREDICTED: {string_predicted}\nACTUAL: {string_actual}")
-#     plt.savefig(f"../outputs_k_means/inference_{counter}.jpg")
-#     plt.close()  # Close the plot to avoid displaying it in the notebook
