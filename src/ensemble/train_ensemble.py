@@ -88,10 +88,11 @@ epochs = []
 num_epochs = 100
 clf = RandomForestClassifier(n_estimators=10, random_state=42, warm_start=True)
 multi_target_forest = MultiOutputClassifier(clf, n_jobs=-1)
-previous_accuracy = 0
-accuracy = 1
+previous_accuracy = 1
+accuracy = 0
 epoch = 0
-while abs(previous_accuracy-accuracy) > 1e-5:
+diff = 1.0
+while diff > 1e-5:
     # Fit your model
     multi_target_forest.fit(features, labels)
 
@@ -102,15 +103,17 @@ while abs(previous_accuracy-accuracy) > 1e-5:
     predictions = multi_target_forest.predict(validation_features)
 
     # Calculate accuracy
-    accuracy = accuracy_score(validation_labels, predictions)
+    accuracy = accuracy_score(validation_labels.T, predictions.T)
 
     # Append accuracy and epoch to lists
     accuracies.append(accuracy)
     epochs.append(epoch)
+    if epoch != 0:
+        diff = abs(previous_accuracy - accuracy)
+    previous_accuracy = accuracy
 
     print(f"Epoch: {epoch}, Accuracy: {accuracy}")
     epoch += 1
-    previous_accuracy = accuracy
 
 #multi_target_forest.fit(features, labels)
 plt.figure(figsize=(10, 5))
@@ -119,6 +122,7 @@ plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.title('Accuracy vs Epoch')
 plt.show()
+plt.savefig('../../outputs/resnet50_ensemble_model_accuracy.png')
 
 # Save the model
 joblib.dump(multi_target_forest, '../../outputs/resnet50_ensemble_model.pkl')
