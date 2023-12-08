@@ -2,10 +2,12 @@ import models
 import torch
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from dataset.dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
-from sklearn.metrics import f1_score, precision_score, recall_score
+from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
+from sklearn.metrics import confusion_matrix, roc_curve, auc, precision_recall_curve, average_precision_score
 import xgboost as xgb
 
 # initialize the computation device
@@ -13,7 +15,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 #intialize the model
 feature_model = models.feature_model(requires_grad=False).to(device)
-checkpoint_feature = torch.load('trained_models/feature_model.pth')
+checkpoint_feature = torch.load('../../outputs/resnet50_feature_extractor.pth')
 checkpoint_feature['model_state_dict'].pop('fc.weight', None)
 checkpoint_feature['model_state_dict'].pop('fc.bias', None)
 # load model weights state_dict
@@ -30,7 +32,7 @@ for i in range(num_models):
             learning_rate=0.1,
             use_label_encoder=False  # to avoid a warning since XGBoost 1.3.0 release
         )
-    model.load_model(f'trained_models/xgb_model_{i}.json')
+    model.load_model(f'trained_models_2/xgb_model_{i}.json')
     xgb_models.append(model)
 
 # prepare the test dataset and dataloader
@@ -47,7 +49,7 @@ test_loader = DataLoader(
     shuffle=False
 )
 
-def evaluate_xgb(feature_extractor, val_loader, xgb_models, device, num_batches=1, threshold=0.1):
+def evaluate_xgb(feature_extractor, val_loader, xgb_models, device, num_batches=1, threshold=0.5):
     val_features = []
     val_labels = []
     predictions = []
@@ -85,12 +87,85 @@ def evaluate_xgb(feature_extractor, val_loader, xgb_models, device, num_batches=
     f1_micro = f1_score(val_labels, predictions, average='micro')
     precision_micro = precision_score(val_labels, predictions, average='micro')
     recall_micro = recall_score(val_labels, predictions, average='micro')
+    accuracy = accuracy_score(val_labels.T, predictions.T)
+
+
+    # Initialize lists to store the average metrics
+    tprs = []
+    aucs = []
+    mean_fpr = np.linspace(0, 1, 100)
+
+    precisions = []
+    recalls = []
+    average_precisions = []
+    mean_recall = np.linspace(0, 1, 100)
+    cumulative_conf_matrix = np.zeros((2, 2))
+
+    # Compute ROC and PR for each class
+    for i, model in enumerate(xgb_models):
+        y_true = val_labels[:, i]
+        y_scores = predictions[:, i]
+
+        # Update the cumulative confusion matrix
+        conf_matrix = confusion_matrix(y_true, y_scores)
+        cumulative_conf_matrix += conf_matrix
+
+        # ROC
+        fpr, tpr, _ = roc_curve(y_true, y_scores)
+        tprs.append(np.interp(mean_fpr, fpr, tpr))
+        tprs[-1][0] = 0.0
+        roc_auc = auc(fpr, tpr)
+        aucs.append(roc_auc)
+
+        # Precision-Recall
+        precision, recall, _ = precision_recall_curve(y_true, y_scores)
+        rev_recall = np.fliplr([recall])[0]  # Reverse the array
+        rev_precision = np.fliplr([precision])[0]
+        precisions.append(np.interp(mean_recall, rev_recall, rev_precision))
+        average_precisions.append(average_precision_score(y_true, y_scores))
+
+    # Average ROC
+    mean_tpr = np.mean(tprs, axis=0)
+    mean_tpr[-1] = 1.0
+    mean_auc = auc(mean_fpr, mean_tpr)
+
+    # Average Precision-Recall
+    mean_precision = np.mean(precisions, axis=0)
+
+    # Plot Average ROC
+    plt.figure()
+    plt.plot(mean_fpr, mean_tpr, color='b', label=f'Average ROC (AUC = {mean_auc:.2f})')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Average ROC Curve across all classes')
+    plt.legend(loc="lower right")
+    plt.show()
+
+    # Plot Average Precision-Recall
+    plt.figure()
+    plt.plot(mean_recall, mean_precision, color='b', label=f'Average Precision-Recall')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Average Precision-Recall Curve across all classes')
+    plt.legend(loc="lower left")
+    plt.show()
+
+    # Plot the cumulative confusion matrix
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cumulative_conf_matrix/1095, annot=True, fmt=".2f", cmap="Blues")  # Using .2f for formatting
+    plt.title("Cumulative Confusion Matrix")
+    plt.xlabel("Predicted Label")
+    plt.ylabel("True Label")
+    plt.show()
+    #plt.savefig('outputs/confusion_matrix.png')
 
     print(f"F1 Score (Micro): {f1_micro}")
     print(f"Precision (Micro): {precision_micro}")
     print(f"Recall (Micro): {recall_micro}")
+    print(f"Accuracy: {accuracy}")
 
-    return f1_micro
+
+    return f1_micro, precision_micro, recall_micro
 
 
 evaluate_xgb(feature_model, test_loader, xgb_models, device, 100 , 0.2)
