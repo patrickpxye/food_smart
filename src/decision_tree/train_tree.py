@@ -8,8 +8,12 @@ import matplotlib.pyplot as plt
 from dataset.dataset_builder import ImageDataset
 from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score, hamming_loss
+from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
+from feature_extractor.efficientnet_feature_extractor import EfficientNetFeatureExtractor
+from feature_extractor.vgg16_feature_extractor import VGG16FeatureExtractor
+from feature_extractor.inceptionv3_feature_extractor import InceptionV3FeatureExtractor
 
-def train_xgb(feature_extractor, train_loader, device, val_loader, num_batches=1):
+def train_xgb(feature_extractor, train_loader, device, val_loader, num_batches=100):
     train_features = []
     train_labels = []
     batch_count = 0
@@ -124,7 +128,7 @@ train_data = ImageDataset("../../input/ingredients_classifier/images/",
                           "../../input/ingredients_classifier/train_images.txt",
                           "../../input/ingredients_classifier/train_labels.txt",
                           "../../input/ingredients_classifier/recipes.txt",
-                          "../../input/ingredients_classifier/ingredients.txt",
+                          "../../input/ingredients_classifier/filtered_ingredients.txt",
                           True,
                           False)
 train_loader = DataLoader(
@@ -138,7 +142,7 @@ val_data = ImageDataset("../../input/ingredients_classifier/images/",
                         "../../input/ingredients_classifier/val_images.txt",
                         "../../input/ingredients_classifier/val_labels.txt",
                         "../../input/ingredients_classifier/recipes.txt",
-                        "../../input/ingredients_classifier/ingredients.txt",
+                        "../../input/ingredients_classifier/filtered_ingredients.txt",
                         False,
                         False)
 val_loader = DataLoader(
@@ -147,16 +151,20 @@ val_loader = DataLoader(
     shuffle=False
 )
 
-# initialize the model
-feature_model = models.feature_model(requires_grad=False).to(device)
-# load the model checkpoint
-checkpoint = torch.load('trained_models/feature_model.pth')
-# Remove fully connected layer weights
-checkpoint['model_state_dict'].pop('fc.weight', None)
-checkpoint['model_state_dict'].pop('fc.bias', None)
-# load model weights state_dict
-feature_model.load_state_dict(checkpoint['model_state_dict'])
-feature_model.eval()
+# # initialize the model
+# feature_model = models.feature_model(requires_grad=False).to(device)
+# # load the model checkpoint
+# checkpoint = torch.load('trained_models/feature_model.pth')
+# # Remove fully connected layer weights
+# checkpoint['model_state_dict'].pop('fc.weight', None)
+# checkpoint['model_state_dict'].pop('fc.bias', None)
+# # load model weights state_dict
+# feature_model.load_state_dict(checkpoint['model_state_dict'])
+# feature_model.eval()
+
+#feature_model = InceptionV3FeatureExtractor(1095).load_extractor('../feature_extractor/InceptronV3_feature_extractor.pth')
+#feature_model = EfficientNetFeatureExtractor(1095).load_extractor('../../outputs/efficientNet_feature_extractor.pth')
+feature_model = Resnet50FeatureExtractor(255).load_extractor('../../outputs/resnet50_feature_extractor_255.pth')
 
 
 def plot_metrics(evals_results):
@@ -219,7 +227,9 @@ def plot_combined_aggregated_loss(evals_results):
     plt.xlabel('Epochs')
     plt.ylabel('Log Loss')
     plt.title('Average Log Loss Across All XGBoost Models')
+    plt.savefig('outputs/average_loss_res.pdf')
     plt.show()
+    
 
 # Usage
 plot_combined_aggregated_loss(evals_results)
@@ -227,4 +237,4 @@ plot_combined_aggregated_loss(evals_results)
 
 # Save each trained XGBoost model
 for i, model in enumerate(xgb_models):
-    model.save_model(f'trained_models_2/xgb_model_{i}.json')
+    model.save_model(f'trained_models_resnet50/xgb_model_{i}.json')

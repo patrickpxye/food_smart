@@ -4,6 +4,7 @@ import xgboost as xgb
 
 def feature_model(requires_grad):
     model = models.resnet50(progress=True, pretrained=True)
+    #model = models.vgg16(progress=True, pretrained=True)
     # to freeze the hidden layers
     if requires_grad == False:
         for param in model.parameters():

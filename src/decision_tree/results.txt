@@ -1,0 +1,255 @@
+Threshold: 0.1
+
+F1 Score (Micro): 0.01434412746157823
+Precision (Micro): 0.0072319532908704885
+Recall (Micro): 0.8660612939841089
+Accuracy: 0.0009132420091324201
+
+inceptionv3:
+F1 Score (Micro): 0.015371240427657135
+Precision (Micro): 0.0077487574946616565
+Recall (Micro): 0.9432463110102156
+Accuracy: 0.0009132420091324201
+
+vgg16:
+F1 Score (Micro): 0.015962892164412355
+Precision (Micro): 0.00804566210045662
+Recall (Micro): 1.0
+Accuracy: 0.0
+
+resnet50:
+F1 Score (Micro): 0.015460217547346916
+Precision (Micro): 0.007793292202068934
+Recall (Micro): 0.9534619750283768
+Accuracy: 0.0
+
+
+Threshold: 0.15
+
+efficientnet:
+
+F1 Score (Micro): 0.38458544180615023
+Precision (Micro): 0.29265402843601895
+Recall (Micro): 0.5607264472190693
+Accuracy: 0.873972602739726
+
+inceptionv3:
+F1 Score (Micro): 0.3427682737169518
+Precision (Micro): 0.23607540702656385
+Recall (Micro): 0.6254256526674233
+Accuracy: 0.8557077625570776
+
+vgg16:
+F1 Score (Micro): 0.2562759222877101
+Precision (Micro): 0.15864864864864864
+Recall (Micro): 0.6662883087400681
+Accuracy: 0.8840182648401826
+
+resnet50:
+F1 Score (Micro): 0.36628511966701355
+Precision (Micro): 0.26373626373626374
+Recall (Micro): 0.5993189557321226
+Accuracy: 0.873972602739726
+
+
+Threshold: 0.2
+
+efficientnet:
+
+F1 Score (Micro): 0.404981050351922
+Precision (Micro): 0.38716356107660455
+Recall (Micro): 0.4245175936435868
+Accuracy: 0.8812785388127854
+
+inceptionv3:
+F1 Score (Micro): 0.385929648241206
+Precision (Micro): 0.3462578899909829
+Recall (Micro): 0.4358683314415437
+Accuracy: 0.8821917808219178
+
+vgg16:
+F1 Score (Micro): 0.3256860098965362
+Precision (Micro): 0.2697466467958271
+Recall (Micro): 0.4108967082860386
+Accuracy: 0.8858447488584474
+
+resnet50:
+F1 Score (Micro): 0.4028307022318999
+Precision (Micro): 0.38702928870292885
+Recall (Micro): 0.4199772985244041
+Accuracy: 0.8831050228310502
+
+
+Threshold: 0.25
+
+efficientnet:
+
+F1 Score (Micro): 0.37017658600392417
+Precision (Micro): 0.4367283950617284
+Recall (Micro): 0.32122587968217936
+Accuracy: 0.8831050228310502
+
+inceptionv3:
+F1 Score (Micro): 0.37209302325581395
+Precision (Micro): 0.4169014084507042
+Recall (Micro): 0.33598183881952326
+Accuracy: 0.8831050228310502
+
+vgg16:
+F1 Score (Micro): 0.2996563573883161
+Precision (Micro): 0.3797909407665505
+Recall (Micro): 0.2474460839954597
+Accuracy: 0.8858447488584474
+
+resnet50:
+F1 Score (Micro): 0.39080459770114945
+Precision (Micro): 0.4467153284671533
+Recall (Micro): 0.3473325766174801
+Accuracy: 0.8840182648401826
+
+
+
+
+Threshold: 0.3
+
+efficientnet:
+
+F1 Score (Micro): 0.3493889288281812
+Precision (Micro): 0.4764705882352941
+Recall (Micro): 0.2758229284903519
+Accuracy: 0.8831050228310502
+
+inceptionv3:
+F1 Score (Micro): 0.35156819839533193
+Precision (Micro): 0.49183673469387756
+Recall (Micro): 0.2735527809307605
+Accuracy: 0.8831050228310502
+
+vgg16:
+F1 Score (Micro): 0.29185185185185186
+Precision (Micro): 0.4200426439232409
+Recall (Micro): 0.22360953461975028
+Accuracy: 0.8858447488584474
+
+resnet50:
+F1 Score (Micro): 0.3649222065063649
+Precision (Micro): 0.48405253283302063
+Recall (Micro): 0.29284903518728717
+Accuracy: 0.8840182648401826
+
+
+
+Threshold: 0.35
+
+efficientnet:
+
+F1 Score (Micro): 0.33565351894818246
+Precision (Micro): 0.5266990291262136
+Recall (Micro): 0.246311010215664
+Accuracy: 0.8831050228310502
+
+inceptionv3:
+F1 Score (Micro): 0.3102893890675241
+Precision (Micro): 0.5316804407713499
+Recall (Micro): 0.21906923950056753
+Accuracy: 0.8849315068493151
+
+vgg16:
+F1 Score (Micro): 0.26454183266932274
+Precision (Micro): 0.44385026737967914
+Recall (Micro): 0.188422247446084
+Accuracy: 0.8858447488584474
+
+resnet50:
+F1 Score (Micro): 0.33903576982892686
+Precision (Micro): 0.5382716049382716
+Recall (Micro): 0.2474460839954597
+Accuracy: 0.8849315068493151
+
+
+
+
+Threshold: 0.4
+
+efficientnet:
+
+F1 Score (Micro): 0.30969845150774244
+Precision (Micro): 0.5491329479768786
+Recall (Micro): 0.21566401816118047
+Accuracy: 0.8831050228310502
+
+inceptionv3:
+F1 Score (Micro): 0.2713915298184961
+Precision (Micro): 0.5688405797101449
+Recall (Micro): 0.1782065834279228
+Accuracy: 0.8849315068493151
+
+vgg16:
+F1 Score (Micro): 0.23699914748508097
+Precision (Micro): 0.476027397260274
+Recall (Micro): 0.15777525539160045
+Accuracy: 0.8858447488584474
+
+resnet50:
+F1 Score (Micro): 0.2958579881656805
+Precision (Micro): 0.5794701986754967
+Recall (Micro): 0.19863791146424517
+Accuracy: 0.8849315068493151
+
+
+
+Threshold: 0.45
+
+efficientnet:
+
+F1 Score (Micro): 0.27835051546391754
+Precision (Micro): 0.5724381625441696
+Recall (Micro): 0.18388195232690124
+Accuracy: 0.8831050228310502
+
+inceptionv3:
+F1 Score (Micro): 0.2222222222222222
+Precision (Micro): 0.5817307692307693
+Recall (Micro): 0.1373439273552781
+Accuracy: 0.8849315068493151
+
+vgg16:
+F1 Score (Micro): 0.18761726078799248
+Precision (Micro): 0.5405405405405406
+Recall (Micro): 0.11350737797956867
+Accuracy: 0.8858447488584474
+
+resnet50:
+F1 Score (Micro): 0.2327272727272727
+Precision (Micro): 0.5844748858447488
+Recall (Micro): 0.1452894438138479
+Accuracy: 0.8849315068493151
+
+
+
+Threshold: 0.5
+
+efficientnet:
+
+F1 Score (Micro): 0.13627254509018036
+Precision (Micro): 0.5811965811965812
+Recall (Micro): 0.0771850170261067
+Accuracy: 0.8858447488584474
+
+inceptionv3:
+F1 Score (Micro): 0.1786743515850144
+Precision (Micro): 0.58125
+Recall (Micro): 0.10556186152099886
+Accuracy: 0.8858447488584474
+
+vgg16:
+F1 Score (Micro): 0.03879310344827586
+Precision (Micro): 0.3829787234042553
+Recall (Micro): 0.02043132803632236
+Accuracy: 0.8858447488584474
+
+resnet50:
+F1 Score (Micro): 0.18882466281310212
+Precision (Micro): 0.6242038216560509
+Recall (Micro): 0.1112372304199773
+Accuracy: 0.8858447488584474

@@ -9,20 +9,29 @@ from torch.utils.data import DataLoader
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 from sklearn.metrics import confusion_matrix, roc_curve, auc, precision_recall_curve, average_precision_score
 import xgboost as xgb
+from feature_extractor.resnet50_feature_extractor import Resnet50FeatureExtractor
+from feature_extractor.efficientnet_feature_extractor import EfficientNetFeatureExtractor
+from feature_extractor.vgg16_feature_extractor import VGG16FeatureExtractor
+from feature_extractor.inceptionv3_feature_extractor import InceptionV3FeatureExtractor
 
 # initialize the computation device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-#intialize the model
-feature_model = models.feature_model(requires_grad=False).to(device)
-checkpoint_feature = torch.load('../../outputs/resnet50_feature_extractor.pth')
-checkpoint_feature['model_state_dict'].pop('fc.weight', None)
-checkpoint_feature['model_state_dict'].pop('fc.bias', None)
-# load model weights state_dict
-feature_model.load_state_dict(checkpoint_feature['model_state_dict'])
-feature_model.eval()
+# #intialize the model
+# feature_model = models.feature_model(requires_grad=False).to(device)
+# checkpoint_feature = torch.load('../../outputs/vgg16_feature_extractor.pth')
+# checkpoint_feature['model_state_dict'].pop('fc.weight', None)
+# checkpoint_feature['model_state_dict'].pop('fc.bias', None)
+# # load model weights state_dict
+# feature_model.load_state_dict(checkpoint_feature['model_state_dict'])
+# feature_model.eval()
 
-num_models = 1095  # Assuming you have 1095 models, one for each class
+feature_model = Resnet50FeatureExtractor(255).load_extractor('../../outputs/resnet50_feature_extractor_255.pth')
+#feature_model = EfficientNetFeatureExtractor(1095).load_extractor('../../outputs/efficientNet_feature_extractor.pth')
+#feature_model = InceptionV3FeatureExtractor(1095).load_extractor('../feature_extractor/InceptronV3_feature_extractor.pth')
+#feature_model = VGG16FeatureExtractor(1095).load_extractor('../../outputs/vgg16_feature_extractor.pth')
+
+num_models = 255  # Assuming you have 1095 models, one for each class
 xgb_models = []
 for i in range(num_models):
     model= xgb.XGBClassifier(
@@ -32,7 +41,7 @@ for i in range(num_models):
             learning_rate=0.1,
             use_label_encoder=False  # to avoid a warning since XGBoost 1.3.0 release
         )
-    model.load_model(f'trained_models_2/xgb_model_{i}.json')
+    model.load_model(f'trained_models_resnet50/xgb_model_{i}.json')
     xgb_models.append(model)
 
 # prepare the test dataset and dataloader
@@ -40,7 +49,7 @@ test_data = ImageDataset("../../input/ingredients_classifier/images/",
                          "../../input/ingredients_classifier/test_images.txt",
                          "../../input/ingredients_classifier/test_labels.txt",
                          "../../input/ingredients_classifier/recipes.txt",
-                         "../../input/ingredients_classifier/ingredients.txt",
+                         "../../input/ingredients_classifier/filtered_ingredients.txt",
                          False,
                          True)
 test_loader = DataLoader(
@@ -77,8 +86,6 @@ def evaluate_xgb(feature_extractor, val_loader, xgb_models, device, num_batches=
         prob_predictions = model.predict_proba(val_features)
         class_predictions = (prob_predictions[:, 1] >= threshold).astype(int)
         predictions.append(class_predictions)
-        # class_predictions = model.predict(val_features)
-        # predictions.append(class_predictions)
         
     # Convert predictions list to a NumPy array
     predictions = np.array(predictions).T  # Transpose to get the correct shape
@@ -152,7 +159,7 @@ def evaluate_xgb(feature_extractor, val_loader, xgb_models, device, num_batches=
 
     # Plot the cumulative confusion matrix
     plt.figure(figsize=(8, 6))
-    sns.heatmap(cumulative_conf_matrix/1095, annot=True, fmt=".2f", cmap="Blues")  # Using .2f for formatting
+    sns.heatmap(cumulative_conf_matrix/255, annot=True, fmt=".2f", cmap="Blues")  # Using .2f for formatting
     plt.title("Cumulative Confusion Matrix")
     plt.xlabel("Predicted Label")
     plt.ylabel("True Label")
@@ -168,7 +175,7 @@ def evaluate_xgb(feature_extractor, val_loader, xgb_models, device, num_batches=
     return f1_micro, precision_micro, recall_micro
 
 
-evaluate_xgb(feature_model, test_loader, xgb_models, device, 100 , 0.2)
+evaluate_xgb(feature_model, test_loader, xgb_models, device, 100, 0.25)
 
 
 def predict_labels(xgb_models, features, threshold=0.1):
